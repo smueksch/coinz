@@ -143,10 +143,10 @@ class MainActivity : AppCompatActivity() {
             val downloadTask = DownloadFileTask(downloadRunner)
 
             Log.d(tag, "$funTag Starting download for URL=${mapUrl.url}")
-            downloadTask.execute(mapUrl.url)
-            // TODO: result of download is null -> why?
-            Log.d(tag, "$funTag Download result=${downloadRunner.result}")
-            saveMap(downloadRunner.result)
+            val map = downloadTask.execute(mapUrl.url).get()
+
+            Log.d(tag, "$funTag Download result=${map.take(100)}")
+            saveMap(map)
 
             // Reset the download date for the map.
             mapDownloadDate = currentDate
