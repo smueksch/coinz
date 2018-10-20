@@ -1,11 +1,4 @@
 <resources>
     <string name="app_name">Coinz</string>
     <string name="action_settings">Settings</string>
-
-    <!-- SharedPreferences -->
-    <string name="preferences_filename">CoinzPreferences</string>
-    <string name="map_download_date">mapDownloadDate</string>
-
-    <!-- Internal Storage -->
-    <string name="map_filename">coinzmap.geojson</string>
 </resources>

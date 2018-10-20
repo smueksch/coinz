@@ -102,12 +102,12 @@ class MainActivity : AppCompatActivity() {
     private fun savePreferences() {
         val funTag = "[savePreferences]"
 
-        val settings = getSharedPreferences(getString(R.string.preferences_filename),
-                Context.MODE_PRIVATE)
+        val settings = getSharedPreferences(AppStrings.preferencesFilename,
+                                            Context.MODE_PRIVATE)
         val editor = settings.edit()
 
         Log.d(tag, "$funTag Saving mapDownloadDate=$mapDownloadDate")
-        editor.putString(getString(R.string.map_download_date), mapDownloadDate)
+        editor.putString(AppStrings.mapDownloadDate, mapDownloadDate)
 
         editor.apply()
     }
@@ -118,10 +118,10 @@ class MainActivity : AppCompatActivity() {
     private fun restorePreferences() {
         val funTag = "[restorePreferences]"
 
-        val settings = getSharedPreferences(getString(R.string.preferences_filename),
+        val settings = getSharedPreferences(AppStrings.preferencesFilename,
                                             Context.MODE_PRIVATE)
 
-        mapDownloadDate = settings.getString(getString(R.string.map_download_date), "")
+        mapDownloadDate = settings.getString(AppStrings.mapDownloadDate, "")
         Log.d(tag, "$funTag Restored mapDownloadDate=$mapDownloadDate")
     }
 
@@ -156,10 +156,10 @@ class MainActivity : AppCompatActivity() {
     private fun saveMap(data: String?) {
         val funTag = "[saveMap]"
 
-        val mapFile = File(filesDir, getString(R.string.map_filename))
+        val mapFile = File(filesDir, AppStrings.mapFilename)
 
         FileOutputStream(mapFile).use { it.write(data?.toByteArray()) }
-        Log.d(tag, "$funTag Saved map to $filesDir/${getString(R.string.map_filename)}")
+        Log.d(tag, "$funTag Saved map to $filesDir/${AppStrings.mapFilename}")
     }
 
     // TODO: Need map loading capabilities.
