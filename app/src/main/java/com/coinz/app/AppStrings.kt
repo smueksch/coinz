@@ -10,11 +10,11 @@ object AppStrings {
     /*
      * SharedPreferences:
      */
-    val preferencesFilename = "CoinzPreferences"
-    val mapDownloadDate = "mapDownloadDate"
+    const val preferencesFilename = "CoinzPreferences"
+    const val mapDownloadDate = "mapDownloadDate"
 
     /*
      * Internal Storage:
      */
-    val mapFilename = "coinzmap.geojson"
+    const val mapFilename = "coinzmap.geojson"
 }

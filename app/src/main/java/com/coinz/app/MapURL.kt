@@ -15,12 +15,12 @@ class MapURL(val date: Date) {
 
     // TODO: Should this be part of the constructor? I.e. have string constants passed in here?
     companion object {
-        val baseAddress = "http://homepages.inf.ed.ac.uk/stg/coinz"
-        val dateFormat = "yyyy/MM/dd"
-        val mapFilename = "coinzmap.geojson"
+        const val baseAddress = "http://homepages.inf.ed.ac.uk/stg/coinz"
+        const val dateFormat = "yyyy/MM/dd"
+        const val mapFilename = "coinzmap.geojson"
     }
 
-    var url: String = ""
+    var url: String
 
     init {
         url = buildUrl()

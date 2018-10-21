@@ -5,7 +5,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import java.net.HttpURLConnection
-import java.util.*
 
 class DownloadFileTask(private val caller: DownloadCompleteRunner) :
         AsyncTask<String, Void, String>() {
