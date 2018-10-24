@@ -8,13 +8,19 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.google.gson.JsonElement
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.IconFactory
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -25,6 +31,7 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
 
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -129,6 +136,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             map?.uiSettings?.isZoomControlsEnabled = true
 
             enableLocation()
+
+            // TODO: Is this the appropriate function to call this?
+            val map = loadMap()
+
+            // Add all makers.
+            map.features()?.forEach { addMarker(mapboxMap, it) }
         }
     }
 
@@ -225,6 +238,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         }
     }
 
+    // TODO: saveMapData maybe?
     private fun saveMap(data: String?) {
         val funTag = "[saveMap]"
 
@@ -233,6 +247,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         FileOutputStream(mapFile).use { it.write(data?.toByteArray()) }
         Log.d(tag, "$funTag Saved map to $filesDir/${AppStrings.mapFilename}")
     }
+
+    // TODO: document
+    private fun loadMapData(): String {
+        val funTag = "[loadMapData]"
+
+        val mapFile = File(filesDir, AppStrings.mapFilename)
+
+        val rawMapData: String = FileInputStream(mapFile).bufferedReader().use { it.readText() }
+        Log.d(tag, "$funTag Loaded map from $filesDir/${AppStrings.mapFilename}")
+
+        return rawMapData
+    }
+
+    // TODO: document
+    private fun loadMap() = FeatureCollection.fromJson(loadMapData())
 
     private fun enableLocation() {
         val funTag = "[enableLocation]"
@@ -291,5 +320,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         map?.animateCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    // TODO: Need map loading capabilities.
+    private fun addMarker(mapboxMap: MapboxMap?, mapFeature: Feature) {
+        val funTag = "[addMarker]"
+
+        val markerOpt = MarkerOptions().apply {
+            val geometry = mapFeature.geometry()
+            if (geometry is Point) {
+                position = LatLng(geometry.latitude(), geometry.longitude())
+            }
+
+            val properties = mapFeature.properties()
+
+            // Add function to JsonElement to have prettier string conversions.
+            fun JsonElement.toPrettyString(): String {
+                // Drop the '"' at the beginning and end of regular string version.
+                return this.toString().drop(1).dropLast(1)
+            }
+
+            // TODO: move these into string resurces.
+            // TODO: customize the marker depending on marker-color property.
+            title = "Coin: ${properties?.get("currency")?.toPrettyString()}"
+            snippet = "Value: ${properties?.get("value")?.toPrettyString()}"
+            icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)
+        }
+
+        mapboxMap?.addMarker(markerOpt)
+    }
 }
