@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Coinz</string>
     <string name="action_settings">Settings</string>
+
+    <!-- MainActivity -->
+    <!-- TODO: Should the colon be here or at location of invocation? -->
+    <string name="coin_marker_title">Coin</string>
+    <string name="coin_marker_snippet">Value</string>
 </resources>

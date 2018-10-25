@@ -1,6 +1,7 @@
 package com.coinz.app
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -330,17 +331,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             }
 
             val properties = mapFeature.properties()
+            val currency = properties?.get("currency")?.asString ?: ""
+            val value = properties?.get("value")?.asString ?: ""
 
-            // Add function to JsonElement to have prettier string conversions.
-            fun JsonElement.toPrettyString(): String {
-                // Drop the '"' at the beginning and end of regular string version.
-                return this.toString().drop(1).dropLast(1)
-            }
+            val markerTitle = getString(R.string.coin_marker_title)
+            val markerSnippet = getString(R.string.coin_marker_snippet)
 
-            // TODO: move these into string resurces.
+            title = "$markerTitle: $currency"
+            snippet = "$markerSnippet: $value"
+
             // TODO: customize the marker depending on marker-color property.
-            title = "Coin: ${properties?.get("currency")?.toPrettyString()}"
-            snippet = "Value: ${properties?.get("value")?.toPrettyString()}"
             icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)
         }
 
