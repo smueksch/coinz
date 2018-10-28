@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.utils
 
 /**
  * Application Strings.
@@ -7,6 +7,11 @@ package com.coinz.app
  *
  */
 object AppStrings {
+    /*
+     * General:
+     */
+    const val dateFormat = "yyyy/MM/dd"
+
     /*
      * SharedPreferences:
      */

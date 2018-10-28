@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.database
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
@@ -10,16 +10,16 @@ import android.arch.persistence.room.Query
 interface CoinDAO {
 
     @Query("SELECT * FROM coins WHERE id = :id")
-    fun get(id: String): LiveData<Coin>
+    fun get(id: String): LiveData<Coin>?
 
     @Query("SELECT * FROM coins")
-    fun getAll(): LiveData<List<Coin>>
+    fun getAll(): LiveData<List<Coin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 1")
-    fun getAllCollected(): LiveData<List<Coin>>
+    fun getAllCollected(): LiveData<List<Coin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 0")
-    fun getAllNotCollected(): LiveData<List<Coin>>
+    fun getAllNotCollected(): LiveData<List<Coin>>?
 
     @Insert(onConflict = REPLACE)
     fun insert(vararg coins: Coin)

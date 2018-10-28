@@ -1,9 +1,10 @@
-package com.coinz.app
+package com.coinz.app.database
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import com.coinz.app.utils.AppStrings
 
 @Database(entities = arrayOf(Coin::class), version = 1)
 abstract class CoinDatabase : RoomDatabase() {

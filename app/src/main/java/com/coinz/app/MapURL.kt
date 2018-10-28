@@ -3,6 +3,8 @@ package com.coinz.app
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO: Might need complete re-doing with new database code.
+
 /**
  * Map URL utility.
  *

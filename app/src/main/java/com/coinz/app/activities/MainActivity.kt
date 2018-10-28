@@ -1,7 +1,6 @@
-package com.coinz.app
+package com.coinz.app.activities
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -9,7 +8,11 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.google.gson.JsonElement
+import com.coinz.app.DownloadCompleteRunner
+import com.coinz.app.DownloadFileTask
+import com.coinz.app.MapURL
+import com.coinz.app.R
+import com.coinz.app.utils.AppStrings
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.android.core.location.LocationEnginePriority
