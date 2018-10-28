@@ -15,8 +15,14 @@ interface CoinDAO {
     @Query("SELECT * FROM coins")
     fun getAll(): LiveData<List<Coin>>
 
+    @Query("SELECT * FROM coins WHERE is_collected = 1")
+    fun getAllCollected(): LiveData<List<Coin>>
+
+    @Query("SELECT * FROM coins WHERE is_collected = 0")
+    fun getAllNotCollected(): LiveData<List<Coin>>
+
     @Insert(onConflict = REPLACE)
-    fun insert(coin: Coin)
+    fun insert(vararg coins: Coin)
 
     /**
      * Mark given coin as collected.

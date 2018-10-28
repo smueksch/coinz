@@ -3,8 +3,9 @@ package com.coinz.app
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.Point
 
-// TODO: should this be "OldCoin"?
 // TODO: Think about whether there isn't a better way to structure the DB, e.g. have separate table
 // for currencies available, separate table for marker-related info, e.g. marker_*, lat, long.
 // TODO: Document
@@ -22,6 +23,31 @@ data class Coin(
         @ColumnInfo(name = "valid_date") var validDate: String // Date on which coin is valid, expires after.
 ) {
 
-    // TODO: Constructor for Coin from Feature.
+    /**
+     * Create coin from GeoJSON feature.
+     *
+     * @param feature GeoJSON feature holding data for the coin.
+     * @param multiplier Coin value multiplier.
+     */
+    constructor(feature: Feature, multiplier: Double = 1.0): this("", "", 0.0, 0.0, "",
+                                                                  "", 0.0, 0.0, false, "") {
+        // TODO: softcode these string, maybe in AppStrings
+        feature.properties()?.let {
+            id = it["id"].asString
+            currency = it["currency"].asString
+            originalValue = it["value"].asDouble
+            storedValue = originalValue * multiplier
+            markerSymbol = it["marker-symbol"].asString
+            markerColor = it["marker-color"].asString
+            // TODO: Set valid date appropriately!
+        }
+
+        with(feature.geometry()) {
+            if (this is Point) {
+                latitude = latitude()
+                longitude = longitude()
+            }
+        }
+    }
 
 }
