@@ -1,36 +1,27 @@
 package com.coinz.app
 
-import com.mapbox.geojson.Feature
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 
-/**
- * Coin representation.
- *
- * This class represents a coin in the game.
- *
- * @property currency Currency of the coin
- * @property value Value of the coin
- * @constructor Create a coin with specified properties.
- */
-data class Coin(var currency: String, var value: Double) {
+// TODO: should this be "OldCoin"?
+// TODO: Think about whether there isn't a better way to structure the DB, e.g. have separate table
+// for currencies available, separate table for marker-related info, e.g. marker_*, lat, long.
+// TODO: Document
+@Entity(tableName = "coins")
+data class Coin(
+        @PrimaryKey @ColumnInfo(name = "id") var id: String,
+        @ColumnInfo(name = "currency") var currency: String,
+        @ColumnInfo(name = "original_value") var originalValue: Double,
+        @ColumnInfo(name = "stored_value") var storedValue: Double,
+        @ColumnInfo(name = "marker_symbol") var markerSymbol: String,
+        @ColumnInfo(name = "marker_color") var markerColor: String, // TODO: Better stored as number?
+        @ColumnInfo(name = "latitude") var latitude: Double,
+        @ColumnInfo(name = "longitude") var longitude: Double,
+        @ColumnInfo(name = "is_collected") var isCollected: Boolean,
+        @ColumnInfo(name = "valid_date") var validDate: String // Date on which coin is valid, expires after.
+) {
 
-    companion object {
-        const val DEFAULT_CURRENCY = ""
-        const val DEFAULT_VALUE = 0.0
-    }
-
-    /**
-     * Create coin from GeoJSON Feature.
-     *
-     * Note in the case that `feature` has no properties, the coin will be initialized with
-     * default currency and value instead.
-     *
-     * @param feature GeoJSON feature from which to extract coin data.
-     */
-    constructor(feature: Feature) : this(DEFAULT_CURRENCY, DEFAULT_VALUE) {
-        feature.properties()?.let {
-            this.currency = it.get("currency").asString
-            this.value = it.get("value").asDouble
-        }
-    }
+    // TODO: Constructor for Coin from Feature.
 
 }

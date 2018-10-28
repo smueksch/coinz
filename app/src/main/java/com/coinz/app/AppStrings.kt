@@ -17,4 +17,5 @@ object AppStrings {
      * Internal Storage:
      */
     const val mapFilename = "coinzmap.geojson"
+    const val coinDbName = "coin.db"
 }

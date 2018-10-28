@@ -7,9 +7,9 @@ import com.mapbox.geojson.Feature
  */
 abstract class CoinStorage {
 
-    protected var coins = HashMap<String, Coin>()
+    protected var coins = HashMap<String, OldCoin>()
 
-    open fun addCoin(id:String, coin: Coin) = coins.put(id, coin)
+    open fun addCoin(id:String, coin: OldCoin) = coins.put(id, coin)
 
     /**
      * Add coin directly from GeoJSON feature.
@@ -19,7 +19,7 @@ abstract class CoinStorage {
      * @param feature Feature representing coin.
      */
     open fun addCoinFromFeature(feature: Feature) = feature.properties()?.let {
-        addCoin(it.get("id").asString, Coin(feature))
+        addCoin(it.get("id").asString, OldCoin(feature))
     }
 
     open fun removeCoin(id: String) = coins.remove(id)
@@ -30,7 +30,7 @@ abstract class CoinStorage {
      * Get array of all stored coins.
      * @return ArrayList of stored coins.
      */
-    open fun getCoins() = ArrayList<Coin>(coins.values)
+    open fun getCoins() = ArrayList<OldCoin>(coins.values)
 
     abstract fun saveCoins()
 
