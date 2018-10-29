@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.deprecated
 
 import android.os.AsyncTask
 import java.io.IOException
@@ -18,7 +18,7 @@ class DownloadFileTask(private val caller: DownloadCompleteRunner) :
     override fun onPostExecute(result: String) {
         super.onPostExecute(result)
 
-        caller.downloadComplete(result)
+        DownloadCompleteRunner.downloadComplete(result)
     }
 
     private fun loadFileFromNetwork(urlString: String): String {

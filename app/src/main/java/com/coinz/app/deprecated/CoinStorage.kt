@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.deprecated
 
 import com.mapbox.geojson.Feature
 

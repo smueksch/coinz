@@ -13,6 +13,12 @@ object AppStrings {
     const val dateFormat = "yyyy/MM/dd"
 
     /*
+     * Remote data:
+     */
+    const val mapBaseUrl = "http://homepages.inf.ed.ac.uk/stg/coinz"
+    const val mapFilename = "coinzmap.geojson"
+
+    /*
      * SharedPreferences:
      */
     const val preferencesFilename = "CoinzPreferences"
@@ -21,6 +27,5 @@ object AppStrings {
     /*
      * Internal Storage:
      */
-    const val mapFilename = "coinzmap.geojson"
     const val coinDbName = "coin.db"
 }

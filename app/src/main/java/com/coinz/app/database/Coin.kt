@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 
 // TODO: Think about whether there isn't a better way to structure the DB, e.g. have separate table
@@ -23,14 +24,30 @@ data class Coin(
         @ColumnInfo(name = "valid_date") var validDate: String // Date on which coin is valid, expires after.
 ) {
 
+    companion object {
+        /**
+         * Create list of coins from raw map data
+         *
+         * @param geoJson Raw map data.
+         * @return List of coins initialized with raw map data.
+         */
+        fun fromGeoJSON(geoJson: String, validDate: String): List<Coin>? {
+            val coins = ArrayList<Coin>()
+            with(FeatureCollection.fromJson(geoJson)) {
+                this.features()?.forEach { coins.add(Coin(it, validDate)) }
+            }
+            return coins
+        }
+    }
+
     /**
      * Create coin from GeoJSON feature.
      *
      * @param feature GeoJSON feature holding data for the coin.
      * @param multiplier Coin value multiplier.
      */
-    constructor(feature: Feature, multiplier: Double = 1.0): this("", "", 0.0, 0.0, "",
-                                                                  "", 0.0, 0.0, false, "") {
+    constructor(feature: Feature, validDate: String, multiplier: Double = 1.0):
+            this("", "", 0.0, 0.0, "", "", 0.0, 0.0, false, validDate) {
         // TODO: softcode these string, maybe in AppStrings
         feature.properties()?.let {
             id = it["id"].asString

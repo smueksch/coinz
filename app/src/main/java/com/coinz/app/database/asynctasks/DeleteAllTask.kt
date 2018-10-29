@@ -3,10 +3,11 @@ package com.coinz.app.database.asynctasks
 import android.os.AsyncTask
 import com.coinz.app.database.CoinDAO
 
+/** TODO: Deprecated
 /**
- * Task to delete all coins that do not have the given validity date.
+ * Task to delete all coins.
  */
-class DeleteInvalidsTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
+class DeleteAllTask(dao: CoinDAO) : AsyncTask<Void, Void, Void>() {
 
     private var coinDAO = dao
 
@@ -15,9 +16,10 @@ class DeleteInvalidsTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
      *
      * @param validDates First entry is validity date, deletes all coins with different date.
      */
-    override fun doInBackground(vararg validDates: String): Void? {
-        coinDAO.deleteInvalids(validDates[0])
+    override fun doInBackground(vararg p0: Void?): Void? {
+        coinDAO.deleteAll()
         // TODO: is there better way of returning nothing but have return type Void?
         return null
     }
 }
+        */

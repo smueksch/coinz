@@ -1,4 +1,6 @@
-package com.coinz.app
+package com.coinz.app.deprecated
+
+import com.coinz.app.deprecated.CoinStorage
 
 class LocalWallet : CoinStorage() {
 

@@ -8,10 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.coinz.app.DownloadCompleteRunner
-import com.coinz.app.DownloadFileTask
-import com.coinz.app.MapURL
 import com.coinz.app.R
+import com.coinz.app.database.CoinRepository
+import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppStrings
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
@@ -19,12 +18,7 @@ import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.IconFactory
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -34,11 +28,6 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineListener,
                      PermissionsListener {
@@ -46,11 +35,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     companion object {
         const val tag = "MainActivity"
         const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
-        const val dateFormat = "yyyy/MM/dd" // For dates in SharedPreferences.
     }
 
-    private var mapUrl = MapURL(Calendar.getInstance().time) // Map URL for current date.
+    private lateinit var coinRepository: CoinRepository
+
+    /** TODO: Deprecated
+    private var mapUrl = MapURL() // Map URL for current date.
     private var mapDownloadDate: String? = "" // Shared preference could be null.
+    */
 
     private var map: MapboxMap? = null
 
@@ -76,7 +68,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
         restorePreferences()
 
+        // TODO: Should this be in onCreate instead?
+        coinRepository = CoinRepository(this)
+
+        /** TODO: Deprecated
         downloadMap()
+        */
     }
 
     override fun onResume() {
@@ -141,11 +138,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
             enableLocation()
 
+            /** TODO: Deprecated
             // TODO: Is this the appropriate function to call this?
             val map = loadMap()
 
             // Add all makers.
             map.features()?.forEach { addMarker(mapboxMap, it) }
+            */
         }
     }
 
@@ -175,13 +174,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     }
 
     override fun onPermissionResult(granted: Boolean) {
-        val funTag = "[onConnected]"
+        val funTag = "[onPermissionResult]"
 
         Log.d(tag, "$funTag granted == $granted")
         if (granted) {
             enableLocation()
         } else {
             // TODO: open dialogue with user.
+            AppLog(tag, "onPermissionResult", "Location permissions still not granted")
         }
     }
 
@@ -195,8 +195,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                                             Context.MODE_PRIVATE)
         val editor = settings.edit()
 
+        /** TODO: Deprecated
         Log.d(tag, "$funTag Saving mapDownloadDate=$mapDownloadDate")
         editor.putString(AppStrings.mapDownloadDate, mapDownloadDate)
+        */
 
         editor.apply()
     }
@@ -210,10 +212,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         val settings = getSharedPreferences(AppStrings.preferencesFilename,
                                             Context.MODE_PRIVATE)
 
+        /** TODO: Deprecated
         mapDownloadDate = settings.getString(AppStrings.mapDownloadDate, "")
         Log.d(tag, "$funTag Restored mapDownloadDate=$mapDownloadDate")
+        */
     }
 
+    /** TODO: Deprecated
     /**
      * Download today's map.
      *
@@ -266,6 +271,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
     // TODO: document
     private fun loadMap() = FeatureCollection.fromJson(loadMapData())
+    */
 
     private fun enableLocation() {
         val funTag = "[enableLocation]"
@@ -284,7 +290,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private fun initializeLocationEngine() {
         locationEngine = LocationEngineProvider(this).obtainBestLocationEngineAvailable()
 
-        // TODO: Understand this syntax.
         locationEngine.apply {
             interval = 5000        // Every 5 seconds.
             fastestInterval = 1000 // At most every second.
@@ -324,6 +329,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         map?.animateCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
+    /** TODO: Deprecated
     private fun addMarker(mapboxMap: MapboxMap?, mapFeature: Feature) {
         val funTag = "[addMarker]"
 
@@ -349,4 +355,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
         mapboxMap?.addMarker(markerOpt)
     }
+    */
 }
