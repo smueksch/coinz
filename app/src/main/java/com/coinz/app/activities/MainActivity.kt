@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -11,6 +12,7 @@ import android.view.MenuItem
 import com.coinz.app.R
 import com.coinz.app.database.Coin
 import com.coinz.app.database.CoinRepository
+import com.coinz.app.fragments.CollectCoinDialogFragment
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppStrings
 import com.mapbox.android.core.location.LocationEngine
@@ -139,6 +141,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             map?.uiSettings?.isZoomControlsEnabled = true
 
             enableLocation()
+
+            // Custom action when pressing a marker.
+            map?.setOnMarkerClickListener { marker ->
+                AppLog(tag, "onMarkerClick", "marker=$marker")
+
+                val ft = supportFragmentManager.beginTransaction()
+                val previous = supportFragmentManager.findFragmentByTag("collectDialog")
+                previous?.let {
+                    ft.remove(it)
+                }
+                ft.addToBackStack(null)
+
+                CollectCoinDialogFragment().show(ft, "collectDialog")
+
+                true // Consume event.
+                /*
+                 * NB: if we put "true" in here the onClick event is consumed, so there is no small
+                 * Mapbox popup with title and snipped over the marker. If we put "false, we still
+                 * call this listener, but also get a Mapbox popup with title and marker.
+                 */
+            }
 
             /** TODO: Deprecated
             // TODO: Is this the appropriate function to call this?
@@ -364,7 +387,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     }
     */
 
-    // TODO: Move this into a function where it's more appropriate
+    // TODO: Move this into a class where it's more appropriate
     private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
         val markerOpt = MarkerOptions().apply {
             position = LatLng(coin.latitude, coin.longitude)
