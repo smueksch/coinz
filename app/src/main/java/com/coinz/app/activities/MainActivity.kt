@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.coinz.app.R
+import com.coinz.app.database.Coin
 import com.coinz.app.database.CoinRepository
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppStrings
@@ -19,6 +20,7 @@ import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -145,6 +147,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // Add all makers.
             map.features()?.forEach { addMarker(mapboxMap, it) }
             */
+
+            // TODO: Clean-up
+            AppLog(tag, "onMapReady", "getAllNotCollected()=${coinRepository.getAllNotCollected()}")
+            //AppLog(tag, "onMapReady", "getAllNotCollected().value=${coinRepository.getAllNotCollected()}")
+            coinRepository.getAllNotCollected()?.forEach { addMarker(mapboxMap, it) }
         }
     }
 
@@ -356,4 +363,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         mapboxMap?.addMarker(markerOpt)
     }
     */
+
+    // TODO: Move this into a function where it's more appropriate
+    private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
+        val markerOpt = MarkerOptions().apply {
+            position = LatLng(coin.latitude, coin.longitude)
+
+            val currency = coin.currency
+            val value = coin.storedValue
+
+            val markerTitle = getString(R.string.coin_marker_title)
+            val markerSnippet = getString(R.string.coin_marker_snippet)
+
+            title = "$markerTitle: $currency"
+            snippet = "$markerSnippet: $value"
+
+            // TODO: customize the marker depending on marker-color property.
+            //icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)
+        }
+
+        mapboxMap?.addMarker(markerOpt)
+    }
 }

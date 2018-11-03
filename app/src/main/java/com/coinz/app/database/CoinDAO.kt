@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 
+// TODO: Remove the use of LiveData<>. Why do we need it anyway?
 @Dao
 interface CoinDAO {
 
@@ -16,10 +17,10 @@ interface CoinDAO {
     fun getAll(): LiveData<List<Coin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 1")
-    fun getAllCollected(): LiveData<List<Coin>>?
+    fun getAllCollected(): List<Coin>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 0")
-    fun getAllNotCollected(): LiveData<List<Coin>>?
+    fun getAllNotCollected(): List<Coin>?
 
     @Insert(onConflict = REPLACE)
     fun insert(vararg coins: Coin)

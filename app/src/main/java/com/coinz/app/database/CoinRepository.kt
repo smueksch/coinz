@@ -26,14 +26,20 @@ class CoinRepository(val context: Context) {
         updateDatabase()
     }
 
-    fun getAllCollected(): LiveData<List<Coin>>? = coinDao?.let {
+    // TODO: Is this actually returning something?
+    fun getAllCollected() = coinDao?.let {
         updateDatabase()
         GetByIsCollectedTask(it).execute(COLLECTED).get()
     }
 
-    fun getAllNotCollected(): LiveData<List<Coin>>? = coinDao?.let {
+    // TODO: Can we turn this into a 'let' statement again? -> Neater code.
+    fun getAllNotCollected(): List<Coin>? {
         updateDatabase()
-        GetByIsCollectedTask(it).execute(NOT_COLLECTED).get()
+        if (coinDao != null) {
+            return GetByIsCollectedTask(coinDao!!).execute(NOT_COLLECTED).get()
+        } else {
+            return null
+        }
     }
 
     fun insert(coin: Coin) = coinDao?.let { InsertTask(it).execute(coin) }
