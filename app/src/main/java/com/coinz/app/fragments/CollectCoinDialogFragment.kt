@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.coinz.app.R // TODO: Do we really need to import this here?
 import com.coinz.app.database.CoinRepository
 import com.coinz.app.utils.AppLog
+import kotlinx.android.synthetic.main.fragment_collect_coin_dialog.*
 import java.lang.IllegalStateException
 
 // Source: https://developer.android.com/guide/topics/ui/dialogs
@@ -48,6 +49,8 @@ class CollectCoinDialogFragment: DialogFragment() {
                 // See: https://stackoverflow.com/questions/7508185/problem-inflating-custom-view-for-alertdialog-in-dialogfragment
                 val view = it.layoutInflater.inflate(R.layout.fragment_collect_coin_dialog, null)
 
+                // TODO: Check if we actually can't use view binding, would be much nicer.
+                // Can't use Kotlin's view binding here as we inflated the view ourselves.
                 view.findViewById<TextView>(R.id.coin_currency_desc).text = coin?.currency ?: ""
                 view.findViewById<TextView>(R.id.coin_value_desc).text = "${coin?.storedValue}"
 

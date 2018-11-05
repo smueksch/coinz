@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_map"
+            android:title="@string/nav_map" />
+        <item
+            android:id="@+id/nav_local_wallet"
+            android:title="@string/nav_local_wallet" />
+        <item
+            android:id="@+id/nav_central_bank"
+            android:title="@string/nav_central_bank" />
+        <item
+            android:id="@+id/nav_send_change"
+            android:title="@string/nav_send_change" />
+    </group>
+
+
+</menu>

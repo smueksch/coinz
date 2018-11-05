@@ -6,6 +6,7 @@ import android.os.Binder
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -61,6 +62,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu)
+        }
+
+        nav_view.setNavigationItemSelectedListener { menuItem ->
+            // Set item as selected to persist highlight.
+            menuItem.isChecked = true
+
+            // Close drawer when item is tapped.
+            drawer_layout.closeDrawers()
+
+            // TODO: Add code to update UI based on item selected.
+            // Add code here to update the UI based on the item selected
+            // For example, swap UI fragments here
+
+            true
+        }
+        // On start-up, the map is always the active menu item. Since the map is the first item in
+        // the menu it has index 0.
+        nav_view.menu.getItem(0).isChecked = true
 
         Mapbox.getInstance(this, mapboxToken)
         mapView.onCreate(savedInstanceState)
@@ -124,6 +148,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
+            // NOTE: need the 'android.' preceding the 'R.id.home', otherwise the menu button won't
+            // work.
+            android.R.id.home -> {
+                // TODO: have a proper naming convention for IDs
+                drawer_layout.openDrawer(GravityCompat.START)
+                true
+            }
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
