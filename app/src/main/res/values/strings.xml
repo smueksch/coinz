@@ -6,4 +6,11 @@
     <!-- TODO: Should the colon be here or at location of invocation? -->
     <string name="coin_marker_title">Coin</string>
     <string name="coin_marker_snippet">Value</string>
+
+    <!-- CollectCoinDialogFragment -->
+    <string name="coin_collect_dialog_title">Collect Coin?</string>
+    <string name="coin_currency_title">Currency:</string>
+    <string name="coin_value_title">Value:</string>
+    <string name="confirm_coin_collection">Collect</string>
+    <string name="cancel_coin_collection">Cancel</string>
 </resources>

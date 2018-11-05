@@ -2,6 +2,7 @@ package com.coinz.app.activities
 
 import android.content.Context
 import android.location.Location
+import android.os.Binder
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
@@ -153,7 +154,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                 }
                 ft.addToBackStack(null)
 
-                CollectCoinDialogFragment().show(ft, "collectDialog")
+                val collectCoinDialog = CollectCoinDialogFragment()
+
+                collectCoinDialog.arguments = Bundle().apply {
+                    // TODO: These string values should be in AppStrings.
+                    /*
+                    putCharSequence("currency", marker.title)
+                    putCharSequence("value", marker.snippet)
+                    putDouble("latitude", marker.position.latitude)
+                    putDouble("longitude", marker.position.longitude)
+                    */
+                    putCharSequence("coin_id", marker.title)
+                }
+                collectCoinDialog.show(ft, "collectDialog")
 
                 true // Consume event.
                 /*
@@ -388,6 +401,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     */
 
     // TODO: Move this into a class where it's more appropriate
+    // TODO: this could be made into a Kotlin like extension of MapboxMap.
     private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
         val markerOpt = MarkerOptions().apply {
             position = LatLng(coin.latitude, coin.longitude)
@@ -398,8 +412,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             val markerTitle = getString(R.string.coin_marker_title)
             val markerSnippet = getString(R.string.coin_marker_snippet)
 
-            title = "$markerTitle: $currency"
-            snippet = "$markerSnippet: $value"
+            // Temporarily change title and snipped to work with dialog
+            /*title = "$markerTitle: $currency"
+            snippet = "$markerSnippet: $value"*/
+
+            // Set marker title to coin ID so we can retrieve all data associated with Coin simply
+            // by getting the title of the marker later on. Important for onMarkerClickListener.
+            title = coin.id
 
             // TODO: customize the marker depending on marker-color property.
             //icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)

@@ -11,7 +11,7 @@ import android.arch.persistence.room.Query
 interface CoinDAO {
 
     @Query("SELECT * FROM coins WHERE id = :id")
-    fun get(id: String): LiveData<Coin>?
+    fun get(id: String): Coin?
 
     @Query("SELECT * FROM coins")
     fun getAll(): LiveData<List<Coin>>?

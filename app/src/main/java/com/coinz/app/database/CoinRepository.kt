@@ -26,6 +26,11 @@ class CoinRepository(val context: Context) {
         updateDatabase()
     }
 
+    fun getCoin(id: String) = coinDao?.let {
+        updateDatabase()
+        GetCoinTask(it).execute(id).get()
+    }
+
     fun getAllCollected() = coinDao?.let {
         updateDatabase()
         GetByIsCollectedTask(it).execute(COLLECTED).get()
