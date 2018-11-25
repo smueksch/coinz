@@ -1,22 +1,24 @@
 package com.coinz.app.activities
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.location.Location
-import android.os.Binder
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.coinz.app.MapCoinsViewModel
 import com.coinz.app.R
 import com.coinz.app.database.Coin
-import com.coinz.app.database.CoinRepository
 import com.coinz.app.fragments.CollectCoinDialogFragment
+import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppStrings
+import com.coinz.app.utils.NavDrawerMenu
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.android.core.location.LocationEnginePriority
@@ -24,6 +26,7 @@ import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -36,14 +39,16 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineListener,
-                     PermissionsListener {
+                     PermissionsListener, OnCollectCoinListener {
 
     companion object {
         const val tag = "MainActivity"
         const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
     }
 
-    private lateinit var coinRepository: CoinRepository
+    // TODO: Remove below because deprecated
+    // private lateinit var coinRepository: CoinRepository
+    private lateinit var coinViewModel: MapCoinsViewModel
 
     /** TODO: Deprecated
     private var mapUrl = MapURL() // Map URL for current date.
@@ -56,7 +61,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private var permissionsManager = PermissionsManager(this)
     private lateinit var locationEngine: LocationEngine
     private lateinit var locationLayerPlugin: LocationLayerPlugin
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,13 +86,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
             true
         }
-        // On start-up, the map is always the active menu item. Since the map is the first item in
-        // the menu it has index 0.
-        nav_view.menu.getItem(0).isChecked = true
+        // Set map item in menu to be active on start-up.
+        nav_view.menu.getItem(NavDrawerMenu.Map.index).isChecked = true
 
         Mapbox.getInstance(this, mapboxToken)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+
+        coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
+        //coinViewModel.collectedCoins?.observe(this, Observer { coins -> })
+        coinViewModel.coins?.observe(this, Observer<List<Coin>> { coins ->
+            // Remove all current markers.
+            // Note: Seems a bit wasteful if only one coin is updated. However, we don't know
+            // ahead of time how many coins have been updated.
+            map?.removeAnnotations()
+
+            // Add in the new markers for the new set of coins:
+            coins?.forEach { addMarker(map, it) }
+        })
     }
 
     override fun onStart() {
@@ -98,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         restorePreferences()
 
         // TODO: Should this be in onCreate instead?
-        coinRepository = CoinRepository(this)
+        //coinRepository = CoinRepository(this)
 
         /** TODO: Deprecated
         downloadMap()
@@ -178,6 +193,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             map?.setOnMarkerClickListener { marker ->
                 AppLog(tag, "onMarkerClick", "marker=$marker")
 
+                showMarkerDialog(marker)
+
+                /* TODO: Remove as now part of showMarkerDialog
                 val ft = supportFragmentManager.beginTransaction()
                 val previous = supportFragmentManager.findFragmentByTag("collectDialog")
                 previous?.let {
@@ -197,7 +215,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                     */
                     putCharSequence("coin_id", marker.title)
                 }
-                collectCoinDialog.show(ft, "collectDialog")
+                collectCoinDialog.show(ft, "collectDialog")*/
+
+                // TODO: Find a way to call this only if coin is collected, maybe get some return
+                // from dialog.
+                //map?.removeMarker(marker)
 
                 true // Consume event.
                 /*
@@ -216,9 +238,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             */
 
             // TODO: Clean-up
-            AppLog(tag, "onMapReady", "getAllNotCollected()=${coinRepository.getAllNotCollected()}")
+            //AppLog(tag, "onMapReady", "getAllNotCollected()=${coinRepository.getAllNotCollected()}")
             //AppLog(tag, "onMapReady", "getAllNotCollected().value=${coinRepository.getAllNotCollected()}")
-            coinRepository.getAllNotCollected()?.forEach { addMarker(mapboxMap, it) }
+            coinViewModel.coins?.value?.forEach { addMarker(mapboxMap, it) }
         }
     }
 
@@ -257,6 +279,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // TODO: open dialogue with user.
             AppLog(tag, "onPermissionResult", "Location permissions still not granted")
         }
+    }
+
+    override fun onCollectCoin(id: String) {
+        coinViewModel.setCollected(id)
+    }
+
+    private fun showMarkerDialog(marker: Marker) {
+        val ft = supportFragmentManager.beginTransaction()
+        val previous = supportFragmentManager.findFragmentByTag("collectDialog")
+        previous?.let {
+            ft.remove(it)
+        }
+        ft.addToBackStack(null)
+
+        val collectCoinDialog = CollectCoinDialogFragment()
+
+        collectCoinDialog.arguments = Bundle().apply {
+            // TODO: These string values should be in AppStrings.
+            /*
+            putCharSequence("currency", marker.title)
+            putCharSequence("value", marker.snippet)
+            putDouble("latitude", marker.position.latitude)
+            putDouble("longitude", marker.position.longitude)
+            */
+            putCharSequence("coin_id", marker.title)
+        }
+
+        // NOTE: Could be that putting null here is a problem!
+        collectCoinDialog.setTargetFragment(null, 0)
+        collectCoinDialog.show(ft, "collectDialog")
     }
 
     /**

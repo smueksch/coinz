@@ -9,7 +9,7 @@ import com.coinz.app.utils.DateUtil
 import com.coinz.app.utils.UrlUtil
 import com.coinz.app.utils.AppLog
 
-class CoinRepository(val context: Context) {
+class CoinRepository(private val context: Context, private val coinDao: CoinDAO?) {
 
     companion object {
         const val tag = "CoinRepository"
@@ -17,12 +17,7 @@ class CoinRepository(val context: Context) {
         const val NOT_COLLECTED = false
     }
 
-    private var coinDao: CoinDAO?
-
     init {
-        val db = CoinDatabase.getInstance(context)
-        coinDao = db?.coinDao()
-
         updateDatabase()
     }
 
@@ -36,7 +31,7 @@ class CoinRepository(val context: Context) {
         GetByIsCollectedTask(it).execute(COLLECTED).get()
     }
 
-    fun getAllNotCollected(): List<Coin>? = coinDao?.let {
+    fun getAllNotCollected() = coinDao?.let {
         updateDatabase()
         GetByIsCollectedTask(it).execute(NOT_COLLECTED).get()
     }

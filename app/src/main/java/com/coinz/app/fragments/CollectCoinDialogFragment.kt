@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment
 import android.widget.TextView
 import com.coinz.app.R // TODO: Do we really need to import this here?
 import com.coinz.app.database.CoinRepository
+import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
 import kotlinx.android.synthetic.main.fragment_collect_coin_dialog.*
 import java.lang.IllegalStateException
@@ -19,12 +20,20 @@ class CollectCoinDialogFragment: DialogFragment() {
         const val logTag = "CollectCoinDialogFragment"
     }
 
-    private lateinit var coinRepository: CoinRepository
+    private lateinit var callback: OnCollectCoinListener
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        try {
+            callback = activity as OnCollectCoinListener
+        } catch (e: java.lang.ClassCastException) {
+            throw ClassCastException("Calling activity must implement OnCollectCoinListener")
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        coinRepository = CoinRepository(context)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -40,7 +49,7 @@ class CollectCoinDialogFragment: DialogFragment() {
             */
             val coinId = arguments?.getCharSequence("coin_id") as String
 
-            val coin = coinRepository.getCoin(coinId)
+            //val coin = coinRepository.getCoin(coinId)?.value
 
             builder.apply {
                 // Inflate and set the layout for the dialog
@@ -50,21 +59,23 @@ class CollectCoinDialogFragment: DialogFragment() {
                 val view = it.layoutInflater.inflate(R.layout.fragment_collect_coin_dialog, null)
 
                 // TODO: Check if we actually can't use view binding, would be much nicer.
+                // TODO: Get values for view as arguments
                 // Can't use Kotlin's view binding here as we inflated the view ourselves.
-                view.findViewById<TextView>(R.id.coin_currency_desc).text = coin?.currency ?: ""
-                view.findViewById<TextView>(R.id.coin_value_desc).text = "${coin?.storedValue}"
+                //view.findViewById<TextView>(R.id.coin_currency_desc).text = coin?.currency ?: ""
+                //view.findViewById<TextView>(R.id.coin_value_desc).text = "${coin?.storedValue}"
 
-                setView(view)
+                //setView(view)
 
                 setPositiveButton(getString(R.string.confirm_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickPositive", "Collect pressed")
 
                     // TODO: this should only be the case if user is within acceptable distance of coin.
                     AppLog(logTag, "onClickPositive", "Setting Coin with id=$coinId to collected")
-                    coinRepository.setCollected(coinId)
+                    callback.onCollectCoin(coinId)
                 }
                 setNegativeButton(getString(R.string.cancel_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickNegative", "Cancel pressed")
+                    dialog.cancel()
                 }
 
             }

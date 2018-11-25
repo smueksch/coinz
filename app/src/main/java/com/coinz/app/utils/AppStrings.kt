@@ -28,4 +28,5 @@ object AppStrings {
      * Internal Storage:
      */
     const val coinDbName = "coin.db"
+
 }

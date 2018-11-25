@@ -2,7 +2,6 @@ package com.coinz.app.deprecated
 
 import com.coinz.app.utils.AppStrings
 import com.coinz.app.utils.DateUtil
-import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO: Might need complete re-doing with new database code.

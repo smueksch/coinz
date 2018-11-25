@@ -11,16 +11,16 @@ import android.arch.persistence.room.Query
 interface CoinDAO {
 
     @Query("SELECT * FROM coins WHERE id = :id")
-    fun get(id: String): Coin?
+    fun get(id: String): LiveData<Coin>?
 
     @Query("SELECT * FROM coins")
     fun getAll(): LiveData<List<Coin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 1")
-    fun getAllCollected(): List<Coin>?
+    fun getAllCollected(): LiveData<List<Coin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 0")
-    fun getAllNotCollected(): List<Coin>?
+    fun getAllNotCollected(): LiveData<List<Coin>>?
 
     @Insert(onConflict = REPLACE)
     fun insert(vararg coins: Coin)
