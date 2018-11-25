@@ -10,6 +10,7 @@ import com.coinz.app.R // TODO: Do we really need to import this here?
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppConsts
+import com.coinz.app.utils.CollectCoinDialogArgs
 import java.lang.IllegalStateException
 
 // Source: https://developer.android.com/guide/topics/ui/dialogs
@@ -47,19 +48,10 @@ class CollectCoinDialogFragment: DialogFragment() {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
 
-            /*
-            val currency = arguments?.getCharSequence("currency")
-            val value = arguments?.getCharSequence("value")
-            val latitude = arguments?.getDouble("latitude")
-            val longitude = arguments?.getDouble("longitude")
-            */
-            val coinId = arguments?.getCharSequence("coin_id") as String
+            val coinId = arguments?.getCharSequence(CollectCoinDialogArgs.coinId) as String
 
-            // TODO: String should be an app constant.
             // Note: We can't initialize it sooner, as RHS would be null before onCreateDialog.
-            markerDist = arguments?.getDouble("marker_dist") as Double
-
-            //val coin = coinRepository.getCoin(coinId)?.value
+            markerDist = arguments?.getDouble(CollectCoinDialogArgs.markerDist) as Double
 
             builder.apply {
                 // Inflate and set the layout for the dialog
@@ -79,7 +71,6 @@ class CollectCoinDialogFragment: DialogFragment() {
                 setPositiveButton(getString(R.string.confirm_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickPositive", "Collect pressed")
 
-                    // TODO: this should only be the case if user is within acceptable distance of coin.
                     AppLog(logTag, "onClickPositive", "Setting Coin with id=$coinId to collected")
                     callback.onCollectCoin(coinId)
                 }

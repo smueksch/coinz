@@ -17,10 +17,7 @@ import com.coinz.app.R
 import com.coinz.app.database.Coin
 import com.coinz.app.fragments.CollectCoinDialogFragment
 import com.coinz.app.interfaces.OnCollectCoinListener
-import com.coinz.app.utils.AppLog
-import com.coinz.app.utils.AppConsts
-import com.coinz.app.utils.IconIndex
-import com.coinz.app.utils.NavDrawerMenu
+import com.coinz.app.utils.*
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.android.core.location.LocationEnginePriority
@@ -48,14 +45,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         const val tag = "MainActivity"
     }
 
-    // TODO: Remove below because deprecated
-    // private lateinit var coinRepository: CoinRepository
     private lateinit var coinViewModel: MapCoinsViewModel
-
-    /** TODO: Deprecated
-    private var mapUrl = MapURL() // Map URL for current date.
-    private var mapDownloadDate: String? = "" // Shared preference could be null.
-    */
 
     private var map: MapboxMap? = null
 
@@ -113,13 +103,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         mapView.onStart()
 
         restorePreferences()
-
-        // TODO: Should this be in onCreate instead?
-        //coinRepository = CoinRepository(this)
-
-        /** TODO: Deprecated
-        downloadMap()
-        */
     }
 
     override fun onResume() {
@@ -178,10 +161,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     }
 
     override fun onMapReady(mapboxMap: MapboxMap?) {
-        val funTag = "[onMapReady]"
-
         if (mapboxMap == null) {
-            Log.d(tag, "$funTag mapboxMap is null")
+            AppLog(tag, "onMapReady", "mapboxMap is null")
         } else {
             map = mapboxMap
 
@@ -197,32 +178,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
                 showMarkerDialog(marker)
 
-                /* TODO: Remove as now part of showMarkerDialog
-                val ft = supportFragmentManager.beginTransaction()
-                val previous = supportFragmentManager.findFragmentByTag("collectDialog")
-                previous?.let {
-                    ft.remove(it)
-                }
-                ft.addToBackStack(null)
-
-                val collectCoinDialog = CollectCoinDialogFragment()
-
-                collectCoinDialog.arguments = Bundle().apply {
-                    // TODO: These string values should be in AppConsts.
-                    /*
-                    putCharSequence("currency", marker.title)
-                    putCharSequence("value", marker.snippet)
-                    putDouble("latitude", marker.position.latitude)
-                    putDouble("longitude", marker.position.longitude)
-                    */
-                    putCharSequence("coin_id", marker.title)
-                }
-                collectCoinDialog.show(ft, "collectDialog")*/
-
-                // TODO: Find a way to call this only if coin is collected, maybe get some return
-                // from dialog.
-                //map?.removeMarker(marker)
-
                 true // Consume event.
                 /*
                  * NB: if we put "true" in here the onClick event is consumed, so there is no small
@@ -231,26 +186,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                  */
             }
 
-            /** TODO: Deprecated
-            // TODO: Is this the appropriate function to call this?
-            val map = loadMap()
-
-            // Add all makers.
-            map.features()?.forEach { addMarker(mapboxMap, it) }
-            */
-
-            // TODO: Clean-up
-            //AppLog(tag, "onMapReady", "getAllNotCollected()=${coinRepository.getAllNotCollected()}")
-            //AppLog(tag, "onMapReady", "getAllNotCollected().value=${coinRepository.getAllNotCollected()}")
+            // Do initial rendering of all markers.
             coinViewModel.coins?.value?.forEach { addMarker(mapboxMap, it) }
         }
     }
 
     override fun onLocationChanged(location: Location?) {
-        val funTag = "[onLocationChanged]"
-
         if (location == null) {
-            Log.d(tag, "$funTag location is null")
+            AppLog(tag, "onLocationChanged", "location is null")
         } else {
             origin = location
             setCameraPosition(origin)
@@ -259,22 +202,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
     @SuppressWarnings("MissingPermission")
     override fun onConnected() {
-        val funTag = "[onConnected]"
-
-        Log.d(tag, "$funTag requesting location updates")
+        AppLog(tag, "onConnected", "requesting location updates")
         locationEngine.requestLocationUpdates()
     }
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        val funTag = "[onExplanationNeeded]"
-        Log.d(tag, "$funTag Permissions: $permissionsToExplain")
+        AppLog(tag, "onExplanationNeeded", "Permissions: $permissionsToExplain")
         // TODO: Present pop-up message or dialogue
     }
 
     override fun onPermissionResult(granted: Boolean) {
-        val funTag = "[onPermissionResult]"
-
-        Log.d(tag, "$funTag granted == $granted")
+        AppLog(tag, "onPermissionResult", "granted == $granted")
         if (granted) {
             enableLocation()
         } else {
@@ -298,18 +236,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         val collectCoinDialog = CollectCoinDialogFragment()
 
         collectCoinDialog.arguments = Bundle().apply {
-            // TODO: These string values should be in AppConsts.
-            /*
-            putCharSequence("currency", marker.title)
-            putCharSequence("value", marker.snippet)
-            putDouble("latitude", marker.position.latitude)
-            putDouble("longitude", marker.position.longitude)
-            */
-            putCharSequence("coin_id", marker.title)
+            putCharSequence(CollectCoinDialogArgs.coinId, marker.title)
 
             // Compute distance from user to marker:
-            var markerDist = marker.position.distanceTo(locationToLatLng(origin))
-            putDouble("marker_dist", markerDist)
+            val markerDist = marker.position.distanceTo(locationToLatLng(origin))
+            putDouble(CollectCoinDialogArgs.markerDist, markerDist)
         }
 
         // NOTE: Could be that putting null here is a problem!
@@ -321,16 +252,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
      * Save preferences to SharedPreferences file.
      */
     private fun savePreferences() {
-        val funTag = "[savePreferences]"
-
         val settings = getSharedPreferences(AppConsts.preferencesFilename,
                                             Context.MODE_PRIVATE)
         val editor = settings.edit()
-
-        /** TODO: Deprecated
-        Log.d(tag, "$funTag Saving mapDownloadDate=$mapDownloadDate")
-        editor.putString(AppConsts.mapDownloadDate, mapDownloadDate)
-        */
 
         editor.apply()
     }
@@ -339,71 +263,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
      * Restore preferences from SharedPreferences file.
      */
     private fun restorePreferences() {
-        val funTag = "[restorePreferences]"
-
         val settings = getSharedPreferences(AppConsts.preferencesFilename,
                                             Context.MODE_PRIVATE)
-
-        /** TODO: Deprecated
-        mapDownloadDate = settings.getString(AppConsts.mapDownloadDate, "")
-        Log.d(tag, "$funTag Restored mapDownloadDate=$mapDownloadDate")
-        */
     }
-
-    /** TODO: Deprecated
-    /**
-     * Download today's map.
-     *
-     * Download map for the current date if and only if it has not been downloaded yet.
-     */
-    private fun downloadMap() {
-        val funTag = "[downloadMap]"
-
-        val currentDate = SimpleDateFormat(dateFormat).format(Calendar.getInstance().time)
-
-        // Download map only if new one is available.
-        if (currentDate == mapDownloadDate) {
-            Log.d(tag, "$funTag Map already downloaded")
-        } else {
-            val downloadRunner = DownloadCompleteRunner
-            val downloadTask = DownloadFileTask(downloadRunner)
-
-            Log.d(tag, "$funTag Starting download for URL=${mapUrl.url}")
-            val map = downloadTask.execute(mapUrl.url).get()
-
-            Log.d(tag, "$funTag Download result=${map.take(100)}")
-            saveMap(map)
-
-            // Reset the download date for the map.
-            mapDownloadDate = currentDate
-        }
-    }
-
-    // TODO: saveMapData maybe?
-    private fun saveMap(data: String?) {
-        val funTag = "[saveMap]"
-
-        val mapFile = File(filesDir, AppConsts.mapFilename)
-
-        FileOutputStream(mapFile).use { it.write(data?.toByteArray()) }
-        Log.d(tag, "$funTag Saved map to $filesDir/${AppConsts.mapFilename}")
-    }
-
-    // TODO: document
-    private fun loadMapData(): String {
-        val funTag = "[loadMapData]"
-
-        val mapFile = File(filesDir, AppConsts.mapFilename)
-
-        val rawMapData: String = FileInputStream(mapFile).bufferedReader().use { it.readText() }
-        Log.d(tag, "$funTag Loaded map from $filesDir/${AppConsts.mapFilename}")
-
-        return rawMapData
-    }
-
-    // TODO: document
-    private fun loadMap() = FeatureCollection.fromJson(loadMapData())
-    */
 
     private fun enableLocation() {
         val funTag = "[enableLocation]"
@@ -461,54 +323,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         map?.animateCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    /** TODO: Deprecated
-    private fun addMarker(mapboxMap: MapboxMap?, mapFeature: Feature) {
-        val funTag = "[addMarker]"
-
-        val markerOpt = MarkerOptions().apply {
-            val geometry = mapFeature.geometry()
-            if (geometry is Point) {
-                position = LatLng(geometry.latitude(), geometry.longitude())
-            }
-
-            val properties = mapFeature.properties()
-            val currency = properties?.get("currency")?.asString ?: ""
-            val value = properties?.get("value")?.asString ?: ""
-
-            val markerTitle = getString(R.string.coin_marker_title)
-            val markerSnippet = getString(R.string.coin_marker_snippet)
-
-            title = "$markerTitle: $currency"
-            snippet = "$markerSnippet: $value"
-
-            // TODO: customize the marker depending on marker-color property.
-            icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)
-        }
-
-        mapboxMap?.addMarker(markerOpt)
-    }
-    */
-
     // TODO: Move this into a class where it's more appropriate
     // TODO: this could be made into a Kotlin like extension of MapboxMap.
     private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
         val markerOpt = MarkerOptions().apply {
             position = LatLng(coin.latitude, coin.longitude)
 
-            val currency = coin.currency
-            val value = coin.storedValue
-
-            val markerTitle = getString(R.string.coin_marker_title)
-            val markerSnippet = getString(R.string.coin_marker_snippet)
-
-            // Temporarily change title and snipped to work with dialog
-            /*title = "$markerTitle: $currency"
-            snippet = "$markerSnippet: $value"*/
-
             // Set marker title to coin ID so we can retrieve all data associated with Coin simply
             // by getting the title of the marker later on. Important for onMarkerClickListener.
             title = coin.id
 
+            // Set custom marker icon depending on coin data.
             val icons: TypedArray = resources.obtainTypedArray(R.array.marker_drawables)
 
             val iconFactory = IconFactory.getInstance(this@MainActivity)
