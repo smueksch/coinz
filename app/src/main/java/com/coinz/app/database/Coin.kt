@@ -48,7 +48,7 @@ data class Coin(
      */
     constructor(feature: Feature, validDate: String, multiplier: Double = 1.0):
             this("", "", 0.0, 0.0, "", "", 0.0, 0.0, false, validDate) {
-        // TODO: softcode these string, maybe in AppStrings
+        // TODO: softcode these string, maybe in AppConsts
         feature.properties()?.let {
             id = it["id"].asString
             currency = it["currency"].asString

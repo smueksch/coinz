@@ -6,13 +6,10 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.Button
-import android.widget.TextView
 import com.coinz.app.R // TODO: Do we really need to import this here?
-import com.coinz.app.database.CoinRepository
 import com.coinz.app.interfaces.OnCollectCoinListener
-import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog
-import kotlinx.android.synthetic.main.fragment_collect_coin_dialog.*
+import com.coinz.app.utils.AppConsts
 import java.lang.IllegalStateException
 
 // Source: https://developer.android.com/guide/topics/ui/dialogs

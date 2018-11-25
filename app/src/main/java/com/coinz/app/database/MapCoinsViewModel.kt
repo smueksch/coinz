@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.database
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel

@@ -14,7 +14,7 @@ object DateUtil {
     /**
      * Standard app date formatter.
      */
-    private val formatter = SimpleDateFormat(AppStrings.dateFormat)
+    private val formatter = SimpleDateFormat(AppConsts.dateFormat)
 
     /**
      * Get given date as string in standard app format.

@@ -1,10 +1,9 @@
 package com.coinz.app.database
 
-import android.arch.lifecycle.LiveData
 import android.content.Context
 import com.coinz.app.database.asynctasks.*
 
-import com.coinz.app.utils.AppStrings
+import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.DateUtil
 import com.coinz.app.utils.UrlUtil
 import com.coinz.app.utils.AppLog
@@ -50,9 +49,9 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
      * the same as the current date.
      */
     private fun updateDatabase() {
-        val settings = context.getSharedPreferences(AppStrings.preferencesFilename,
+        val settings = context.getSharedPreferences(AppConsts.preferencesFilename,
                                                     Context.MODE_PRIVATE)
-        val mapDownloadDate = settings.getString(AppStrings.mapDownloadDate, "")
+        val mapDownloadDate = settings.getString(AppConsts.mapDownloadDate, "")
         val currentDate = DateUtil.currentDate()
 
         coinDao?.let {
@@ -73,7 +72,7 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
 
                 AppLog(tag, "updateDatabase", "Setting mapDownloadDate to $currentDate in" +
                        "SharedPreferences")
-                editor.putString(AppStrings.mapDownloadDate, currentDate)
+                editor.putString(AppConsts.mapDownloadDate, currentDate)
 
                 editor.apply()
 

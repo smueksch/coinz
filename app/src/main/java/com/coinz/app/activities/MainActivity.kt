@@ -12,13 +12,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.coinz.app.MapCoinsViewModel
+import com.coinz.app.database.MapCoinsViewModel
 import com.coinz.app.R
 import com.coinz.app.database.Coin
 import com.coinz.app.fragments.CollectCoinDialogFragment
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
-import com.coinz.app.utils.AppStrings
+import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.IconIndex
 import com.coinz.app.utils.NavDrawerMenu
 import com.mapbox.android.core.location.LocationEngine
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
     companion object {
         const val tag = "MainActivity"
-        const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
     }
 
     // TODO: Remove below because deprecated
@@ -92,7 +91,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         // Set map item in menu to be active on start-up.
         nav_view.menu.getItem(NavDrawerMenu.Map.index).isChecked = true
 
-        Mapbox.getInstance(this, mapboxToken)
+        Mapbox.getInstance(this, AppConsts.mapboxToken)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
@@ -209,7 +208,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                 val collectCoinDialog = CollectCoinDialogFragment()
 
                 collectCoinDialog.arguments = Bundle().apply {
-                    // TODO: These string values should be in AppStrings.
+                    // TODO: These string values should be in AppConsts.
                     /*
                     putCharSequence("currency", marker.title)
                     putCharSequence("value", marker.snippet)
@@ -299,7 +298,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         val collectCoinDialog = CollectCoinDialogFragment()
 
         collectCoinDialog.arguments = Bundle().apply {
-            // TODO: These string values should be in AppStrings.
+            // TODO: These string values should be in AppConsts.
             /*
             putCharSequence("currency", marker.title)
             putCharSequence("value", marker.snippet)
@@ -324,13 +323,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private fun savePreferences() {
         val funTag = "[savePreferences]"
 
-        val settings = getSharedPreferences(AppStrings.preferencesFilename,
+        val settings = getSharedPreferences(AppConsts.preferencesFilename,
                                             Context.MODE_PRIVATE)
         val editor = settings.edit()
 
         /** TODO: Deprecated
         Log.d(tag, "$funTag Saving mapDownloadDate=$mapDownloadDate")
-        editor.putString(AppStrings.mapDownloadDate, mapDownloadDate)
+        editor.putString(AppConsts.mapDownloadDate, mapDownloadDate)
         */
 
         editor.apply()
@@ -342,11 +341,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private fun restorePreferences() {
         val funTag = "[restorePreferences]"
 
-        val settings = getSharedPreferences(AppStrings.preferencesFilename,
+        val settings = getSharedPreferences(AppConsts.preferencesFilename,
                                             Context.MODE_PRIVATE)
 
         /** TODO: Deprecated
-        mapDownloadDate = settings.getString(AppStrings.mapDownloadDate, "")
+        mapDownloadDate = settings.getString(AppConsts.mapDownloadDate, "")
         Log.d(tag, "$funTag Restored mapDownloadDate=$mapDownloadDate")
         */
     }
@@ -384,20 +383,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private fun saveMap(data: String?) {
         val funTag = "[saveMap]"
 
-        val mapFile = File(filesDir, AppStrings.mapFilename)
+        val mapFile = File(filesDir, AppConsts.mapFilename)
 
         FileOutputStream(mapFile).use { it.write(data?.toByteArray()) }
-        Log.d(tag, "$funTag Saved map to $filesDir/${AppStrings.mapFilename}")
+        Log.d(tag, "$funTag Saved map to $filesDir/${AppConsts.mapFilename}")
     }
 
     // TODO: document
     private fun loadMapData(): String {
         val funTag = "[loadMapData]"
 
-        val mapFile = File(filesDir, AppStrings.mapFilename)
+        val mapFile = File(filesDir, AppConsts.mapFilename)
 
         val rawMapData: String = FileInputStream(mapFile).bufferedReader().use { it.readText() }
-        Log.d(tag, "$funTag Loaded map from $filesDir/${AppStrings.mapFilename}")
+        Log.d(tag, "$funTag Loaded map from $filesDir/${AppConsts.mapFilename}")
 
         return rawMapData
     }

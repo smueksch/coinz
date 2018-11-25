@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-import com.coinz.app.utils.AppStrings
+import com.coinz.app.utils.AppConsts
 
 // TODO: this behaves like a singleton, should we make it one in Kotlin, i.e. an object?
 @Database(entities = arrayOf(Coin::class), version = 1)
@@ -19,7 +19,7 @@ abstract class CoinDatabase : RoomDatabase() {
                 synchronized(CoinDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
                                                     CoinDatabase::class.java,
-                                                    AppStrings.coinDbName).build()
+                                                    AppConsts.coinDbName).build()
                 }
             }
 
