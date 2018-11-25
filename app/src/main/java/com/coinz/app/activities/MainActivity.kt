@@ -304,6 +304,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             putDouble("longitude", marker.position.longitude)
             */
             putCharSequence("coin_id", marker.title)
+
+            // Compute distance from user to marker:
+            var markerDist = marker.position.distanceTo(locationToLatLng(origin))
+            putDouble("marker_dist", markerDist)
         }
 
         // NOTE: Could be that putting null here is a problem!
@@ -508,5 +512,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         }
 
         mapboxMap?.addMarker(markerOpt)
+    }
+
+    // TODO: Is there a better place to put this?
+    private fun locationToLatLng(location: Location): LatLng {
+        return LatLng(location.latitude, location.longitude)
     }
 }

@@ -5,10 +5,12 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.widget.Button
 import android.widget.TextView
 import com.coinz.app.R // TODO: Do we really need to import this here?
 import com.coinz.app.database.CoinRepository
 import com.coinz.app.interfaces.OnCollectCoinListener
+import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog
 import kotlinx.android.synthetic.main.fragment_collect_coin_dialog.*
 import java.lang.IllegalStateException
@@ -21,6 +23,13 @@ class CollectCoinDialogFragment: DialogFragment() {
     }
 
     private lateinit var callback: OnCollectCoinListener
+
+    // Distance between user and marker in meters.
+    private var markerDist = 0.0
+
+    private val collectButton: Button by lazy {
+        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +57,10 @@ class CollectCoinDialogFragment: DialogFragment() {
             val longitude = arguments?.getDouble("longitude")
             */
             val coinId = arguments?.getCharSequence("coin_id") as String
+
+            // TODO: String should be an app constant.
+            // Note: We can't initialize it sooner, as RHS would be null before onCreateDialog.
+            markerDist = arguments?.getDouble("marker_dist") as Double
 
             //val coin = coinRepository.getCoin(coinId)?.value
 
@@ -82,10 +95,18 @@ class CollectCoinDialogFragment: DialogFragment() {
 
             // Create the AlertDialog object and return it
             val dialog = builder.create()
-            //dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false)
 
             dialog
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (markerDist > AppConsts.maxCollectDist) {
+            // User is too far away from coin, disable the button to collect the coin.
+            collectButton.isEnabled = false
+        }
     }
 
 }
