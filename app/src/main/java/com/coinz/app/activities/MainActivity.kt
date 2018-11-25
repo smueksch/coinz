@@ -3,6 +3,7 @@ package com.coinz.app.activities
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.res.TypedArray
 import android.location.Location
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -18,6 +19,7 @@ import com.coinz.app.fragments.CollectCoinDialogFragment
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppStrings
+import com.coinz.app.utils.IconIndex
 import com.coinz.app.utils.NavDrawerMenu
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
@@ -26,6 +28,7 @@ import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -507,8 +510,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // by getting the title of the marker later on. Important for onMarkerClickListener.
             title = coin.id
 
-            // TODO: customize the marker depending on marker-color property.
-            //icon = IconFactory.getInstance(this@MainActivity).fromResource(R.drawable.map_marker_blue)
+            val icons: TypedArray = resources.obtainTypedArray(R.array.marker_drawables)
+
+            val iconFactory = IconFactory.getInstance(this@MainActivity)
+            val iconIndex = IconIndex(coin.markerSymbol, coin.markerColor)
+
+            icon = iconFactory.fromResource(icons.getResourceId(iconIndex, 0))
         }
 
         mapboxMap?.addMarker(markerOpt)

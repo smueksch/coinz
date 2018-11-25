@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="marker_drawables">
+    <!-- 0 marker -->
+        <item>@drawable/marker_m_0_0000ff</item>
+        <item>@drawable/marker_m_0_008000</item>
+        <item>@drawable/marker_m_0_ff0000</item>
+        <item>@drawable/marker_m_0_ffdf00</item>
+    <!-- 1 marker -->
+        <item>@drawable/marker_m_1_0000ff</item>
+        <item>@drawable/marker_m_1_008000</item>
+        <item>@drawable/marker_m_1_ff0000</item>
+        <item>@drawable/marker_m_1_ffdf00</item>
+    <!-- 2 marker -->
+        <item>@drawable/marker_m_2_0000ff</item>
+        <item>@drawable/marker_m_2_008000</item>
+        <item>@drawable/marker_m_2_ff0000</item>
+        <item>@drawable/marker_m_2_ffdf00</item>
+    <!-- 3 marker -->
+        <item>@drawable/marker_m_3_0000ff</item>
+        <item>@drawable/marker_m_3_008000</item>
+        <item>@drawable/marker_m_3_ff0000</item>
+        <item>@drawable/marker_m_3_ffdf00</item>
+    <!-- 4 marker -->
+        <item>@drawable/marker_m_4_0000ff</item>
+        <item>@drawable/marker_m_4_008000</item>
+        <item>@drawable/marker_m_4_ff0000</item>
+        <item>@drawable/marker_m_4_ffdf00</item>
+    <!-- 5 marker -->
+        <item>@drawable/marker_m_5_0000ff</item>
+        <item>@drawable/marker_m_5_008000</item>
+        <item>@drawable/marker_m_5_ff0000</item>
+        <item>@drawable/marker_m_5_ffdf00</item>
+    <!-- 6 marker -->
+        <item>@drawable/marker_m_6_0000ff</item>
+        <item>@drawable/marker_m_6_008000</item>
+        <item>@drawable/marker_m_6_ff0000</item>
+        <item>@drawable/marker_m_6_ffdf00</item>
+    <!-- 7 marker -->
+        <item>@drawable/marker_m_7_0000ff</item>
+        <item>@drawable/marker_m_7_008000</item>
+        <item>@drawable/marker_m_7_ff0000</item>
+        <item>@drawable/marker_m_7_ffdf00</item>
+    <!-- 8 marker -->
+        <item>@drawable/marker_m_8_0000ff</item>
+        <item>@drawable/marker_m_8_008000</item>
+        <item>@drawable/marker_m_8_ff0000</item>
+        <item>@drawable/marker_m_8_ffdf00</item>
+    <!-- 9 marker -->
+        <item>@drawable/marker_m_9_0000ff</item>
+        <item>@drawable/marker_m_9_008000</item>
+        <item>@drawable/marker_m_9_ff0000</item>
+        <item>@drawable/marker_m_9_ffdf00</item>
+    </array>
+
+</resources>
