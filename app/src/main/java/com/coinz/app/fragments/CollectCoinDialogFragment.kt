@@ -2,7 +2,6 @@ package com.coinz.app.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.Button
@@ -10,7 +9,6 @@ import com.coinz.app.R // TODO: Do we really need to import this here?
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppConsts
-import com.coinz.app.utils.CollectCoinDialogArgs
 import java.lang.IllegalStateException
 
 // Source: https://developer.android.com/guide/topics/ui/dialogs
@@ -18,6 +16,18 @@ class CollectCoinDialogFragment: DialogFragment() {
 
     companion object {
         const val logTag = "CollectCoinDialogFragment"
+    }
+
+    /**
+     * Accepted fragment arguments.
+     *
+     * Identifiers for arguments that will be understood by the dialog fragment. Make passing
+     * arguments easier as now no explicit strings need to be used when putting/getting argument
+     * values.
+     */
+    object Args {
+        const val coinId = "coin_id"
+        const val markerDist = "marker_dist"
     }
 
     private lateinit var callback: OnCollectCoinListener
@@ -39,19 +49,15 @@ class CollectCoinDialogFragment: DialogFragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
 
-            val coinId = arguments?.getCharSequence(CollectCoinDialogArgs.coinId) as String
+            val coinId = arguments?.getCharSequence(Args.coinId) as String
 
             // Note: We can't initialize it sooner, as RHS would be null before onCreateDialog.
-            markerDist = arguments?.getDouble(CollectCoinDialogArgs.markerDist) as Double
+            markerDist = arguments?.getDouble(Args.markerDist) as Double
 
             builder.apply {
                 // Inflate and set the layout for the dialog
@@ -90,6 +96,8 @@ class CollectCoinDialogFragment: DialogFragment() {
 
     override fun onStart() {
         super.onStart()
+
+        AppLog(logTag, "onStart", "markerDist=$markerDist")
 
         if (markerDist > AppConsts.maxCollectDist) {
             // User is too far away from coin, disable the button to collect the coin.

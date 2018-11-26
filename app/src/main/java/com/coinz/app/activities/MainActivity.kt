@@ -236,11 +236,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         val collectCoinDialog = CollectCoinDialogFragment()
 
         collectCoinDialog.arguments = Bundle().apply {
-            putCharSequence(CollectCoinDialogArgs.coinId, marker.title)
+            putCharSequence(CollectCoinDialogFragment.Args.coinId, marker.title)
 
             // Compute distance from user to marker:
             val markerDist = marker.position.distanceTo(locationToLatLng(origin))
-            putDouble(CollectCoinDialogArgs.markerDist, markerDist)
+            putDouble(CollectCoinDialogFragment.Args.markerDist, markerDist)
         }
 
         // NOTE: Could be that putting null here is a problem!
