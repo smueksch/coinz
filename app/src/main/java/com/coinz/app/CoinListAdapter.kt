@@ -10,15 +10,14 @@ import com.coinz.app.database.Coin
 
 class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
 
-    // TODO: Should this be a dataclass?
-    class CoinViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class CoinViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         val coinItemView: TextView = itemView.findViewById(R.id.textView)
 
     }
 
     private val layoutInflater = LayoutInflater.from(context)
-    private var coins: List<Coin>? = null
+    private var coins = emptyList<Coin>()
         set(value) {
             field = value
             notifyDataSetChanged()

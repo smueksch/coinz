@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 
-// TODO: Remove the use of LiveData<>. Why do we need it anyway?
 @Dao
 interface CoinDAO {
 

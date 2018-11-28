@@ -7,7 +7,6 @@ import android.content.Context
 
 import com.coinz.app.utils.AppConsts
 
-// TODO: this behaves like a singleton, should we make it one in Kotlin, i.e. an object?
 @Database(entities = arrayOf(Coin::class), version = 1)
 abstract class CoinDatabase : RoomDatabase() {
 
