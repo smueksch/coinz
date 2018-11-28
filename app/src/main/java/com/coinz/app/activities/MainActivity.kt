@@ -28,6 +28,7 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -169,6 +170,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // Set UI options.
             map?.uiSettings?.isCompassEnabled = true
             map?.uiSettings?.isZoomControlsEnabled = true
+
+            // Set zoom level.
+            // Note: we do this here in code because setting the zoom initially in the XML file
+            // seems to have no effect.
+            with(CameraPosition.Builder()) {
+                this.zoom(AppConsts.initialCameraZoom)
+                map?.cameraPosition = this.build()
+            }
 
             enableLocation()
 

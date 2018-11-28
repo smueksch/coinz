@@ -16,6 +16,7 @@ object AppConsts {
      * Mapbox:
      */
     const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
+    const val initialCameraZoom = 16.0
 
     /*
      * Remote data:

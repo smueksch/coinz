@@ -36,8 +36,8 @@
             android:layout_height="match_parent"
             mapbox:mapbox_cameraTargetLat="55.943633"
             mapbox:mapbox_cameraTargetLng="-3.188637"
-            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
-            mapbox:mapbox_cameraZoom="20" />
+            mapbox:mapbox_cameraZoom="12"
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10" />
             <!-- TODO: camera zoom not working atm -->
 
     </android.support.design.widget.CoordinatorLayout>
