@@ -36,9 +36,13 @@
             android:layout_height="match_parent"
             mapbox:mapbox_cameraTargetLat="55.943633"
             mapbox:mapbox_cameraTargetLng="-3.188637"
-            mapbox:mapbox_cameraZoom="12"
-            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10" />
-            <!-- TODO: camera zoom not working atm -->
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+            mapbox:mapbox_cameraZoom="16" />
+
+        <FrameLayout
+            android:id="@+id/local_wallet_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </android.support.design.widget.CoordinatorLayout>
 

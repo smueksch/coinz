@@ -7,6 +7,8 @@ import android.content.res.TypedArray
 import android.location.Location
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -16,6 +18,7 @@ import com.coinz.app.database.MapCoinsViewModel
 import com.coinz.app.R
 import com.coinz.app.database.Coin
 import com.coinz.app.fragments.CollectCoinDialogFragment
+import com.coinz.app.fragments.LocalWalletFragment
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.*
 import com.mapbox.android.core.location.LocationEngine
@@ -76,6 +79,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // TODO: Add code to update UI based on item selected.
             // Add code here to update the UI based on the item selected
             // For example, swap UI fragments here
+            // TODO: Fix this, doesn't seem to be doing much.
+            when(menuItem.itemId) {
+                R.id.nav_local_wallet -> {
+                    AppLog(tag, "navigationItemSelectedListener", "clicked LocalWallet menu item")
+
+                    val fragmentManager: FragmentManager = supportFragmentManager
+                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+                    transaction.apply {
+                        add(R.id.local_wallet_container, LocalWalletFragment.newInstance())
+                        addToBackStack(null)
+                    }
+
+                    transaction.commit()
+
+                    /*
+                    supportFragmentManager.beginTransaction().apply {
+                        add(R.id.local_wallet_container, LocalWalletFragment())
+                        commit()
+                    */
+                    }
+            }
 
             true
         }

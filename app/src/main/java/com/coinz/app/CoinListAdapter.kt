@@ -17,6 +17,8 @@ class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.Co
     }
 
     private val layoutInflater = LayoutInflater.from(context)
+
+    // Cached copy of coins.
     private var coins = emptyList<Coin>()
         set(value) {
             field = value
@@ -26,13 +28,10 @@ class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.Co
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinViewHolder =
         CoinViewHolder(layoutInflater.inflate(R.layout.recyclerview_item, parent, false))
 
-    override fun onBindViewHolder(holder: CoinViewHolder, position: Int) =
-        coins?.let {
-            // NOTE: need 'let' syntax here instead of 'when' as we would have to cast 'coins' to
-            // 'List<Coin>' explicitly.
-            holder.coinItemView.text = it[position].id
-        } ?: holder.coinItemView.setText("No Coin") // Covers data not ready case.
+    override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
+        holder.coinItemView.text = coins[position].id
+    }
 
-    override fun getItemCount(): Int = coins?.size ?: 0 // Initial value is 0.
+    override fun getItemCount(): Int = coins.size
 
 }
