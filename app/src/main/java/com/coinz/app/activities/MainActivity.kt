@@ -35,7 +35,9 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.MapboxMapOptions
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.maps.SupportMapFragment
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
@@ -53,6 +55,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
     private var map: MapboxMap? = null
 
+    private lateinit var mapFragment: SupportMapFragment
+
     private lateinit var origin: Location
     private var permissionsManager = PermissionsManager(this)
     private lateinit var locationEngine: LocationEngine
@@ -62,6 +66,75 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        Mapbox.getInstance(this, AppConsts.mapboxToken)
+        //mapView.onCreate(savedInstanceState)
+        //mapView.getMapAsync(this)
+
+        if (savedInstanceState == null) {
+            val fragmentManager: FragmentManager = supportFragmentManager
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+            // Call map fragment.
+            val centralCampus = LatLng(55.943633, -3.188637)
+
+            val mapOptions = MapboxMapOptions()
+            with(CameraPosition.Builder()) {
+                target(centralCampus)
+                zoom(AppConsts.initialCameraZoom)
+                mapOptions.camera(build())
+            }
+
+            mapFragment = SupportMapFragment.newInstance(mapOptions)
+            transaction.add(R.id.fragment_container, mapFragment, "com.mapbox.map")
+
+            //transaction.addToBackStack("mapbox.map") // TODO: should be same as ID above?
+
+            transaction.commit()
+        } else {
+            mapFragment = supportFragmentManager.findFragmentByTag("com.mapbox.map") as SupportMapFragment
+        }
+
+        // TODO: Do we still need the onMapReady callback in the main activity then?
+        mapFragment.getMapAsync { mapboxMap ->
+            if (mapboxMap == null) {
+                AppLog(tag, "onMapReady", "mapboxMap is null")
+            } else {
+                map = mapboxMap
+
+                // Set UI options.
+                map?.uiSettings?.isCompassEnabled = true
+                map?.uiSettings?.isZoomControlsEnabled = true
+
+                // Set zoom level.
+                // Note: we do this here in code because setting the zoom initially in the XML file
+                // seems to have no effect.
+                with(CameraPosition.Builder()) {
+                    this.zoom(AppConsts.initialCameraZoom)
+                    map?.cameraPosition = this.build()
+                }
+
+                // TODO: Can we move this function outside of MainActivity?
+                enableLocation()
+
+                // Custom action when pressing a marker.
+                map?.setOnMarkerClickListener { marker ->
+                    AppLog(tag, "onMarkerClick", "marker=$marker")
+
+                    showMarkerDialog(marker)
+
+                    true // Consume event.
+                    /*
+                     * NB: if we put "true" in here the onClick event is consumed, so there is no small
+                     * Mapbox popup with title and snipped over the marker. If we put "false, we still
+                     * call this listener, but also get a Mapbox popup with title and marker.
+                     */
+                }
+
+                // Do initial rendering of all markers.
+                coinViewModel.coins?.value?.forEach { addMarker(mapboxMap, it) }
+            }
+        }
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -81,6 +154,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             // For example, swap UI fragments here
             // TODO: Fix this, doesn't seem to be doing much.
             when(menuItem.itemId) {
+                R.id.nav_map -> {
+                    // TODO: Switch to map fragment.
+                    AppLog(tag, "navigationItemSelectedListener", "clicked Map menu item")
+
+                    val fragmentManager: FragmentManager = supportFragmentManager
+                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+                    transaction.apply {
+                        replace(R.id.fragment_container, mapFragment)
+                        //addToBackStack("mapbox.map")
+                    }
+
+                    transaction.commit()
+                }
                 R.id.nav_local_wallet -> {
                     AppLog(tag, "navigationItemSelectedListener", "clicked LocalWallet menu item")
 
@@ -88,8 +175,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                     val transaction: FragmentTransaction = fragmentManager.beginTransaction()
 
                     transaction.apply {
-                        add(R.id.local_wallet_container, LocalWalletFragment.newInstance())
-                        addToBackStack(null)
+                        add(R.id.fragment_container, LocalWalletFragment.newInstance())
+                        //addToBackStack("local_wallet")
                     }
 
                     transaction.commit()
@@ -106,10 +193,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         }
         // Set map item in menu to be active on start-up.
         nav_view.menu.getItem(NavDrawerMenu.Map.index).isChecked = true
-
-        Mapbox.getInstance(this, AppConsts.mapboxToken)
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
 
         coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
         //coinViewModel.collectedCoins?.observe(this, Observer { coins -> })
