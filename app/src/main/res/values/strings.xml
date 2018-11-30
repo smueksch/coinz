@@ -22,4 +22,9 @@
     <string name="confirm_coin_collection">Collect</string>
     <string name="cancel_coin_collection">Cancel</string>
     <string name="title_activity_local_wallet">LocalWalletActivity</string>
+
+    <!-- LocalWallet -->
+    <string name="coin_card_value_desc">Value:</string>
+    <string name="coin_card_store_button">Store</string>
+    <string name="coin_card_send_button">Send</string>
 </resources>
