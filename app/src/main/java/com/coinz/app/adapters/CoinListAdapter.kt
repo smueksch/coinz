@@ -1,4 +1,4 @@
-package com.coinz.app
+package com.coinz.app.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.coinz.app.R
 import com.coinz.app.database.Coin
 
 class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
@@ -30,6 +31,11 @@ class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.Co
 
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
         holder.coinItemView.text = coins[position].id
+    }
+
+    internal fun setCoins(coins: List<Coin>) {
+        this.coins = coins
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = coins.size

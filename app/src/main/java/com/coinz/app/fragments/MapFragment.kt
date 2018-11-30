@@ -15,7 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.database.Coin
-import com.coinz.app.database.MapCoinsViewModel
+import com.coinz.app.database.viewmodels.MapCoinsViewModel
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog

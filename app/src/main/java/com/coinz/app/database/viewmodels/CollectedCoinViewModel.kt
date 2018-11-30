@@ -1,4 +1,4 @@
-package com.coinz.app.database
+package com.coinz.app.database.viewmodels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -7,7 +7,7 @@ import com.coinz.app.database.Coin
 import com.coinz.app.database.CoinDatabase
 import com.coinz.app.database.CoinRepository
 
-class MapCoinsViewModel(application: Application): AndroidViewModel(application) {
+class CollectedCoinViewModel(application: Application): AndroidViewModel(application) {
 
     private var coinRepository: CoinRepository
 
@@ -18,11 +18,11 @@ class MapCoinsViewModel(application: Application): AndroidViewModel(application)
         val coinDAO = CoinDatabase.getInstance(application)?.coinDao()
         coinRepository = CoinRepository(application, coinDAO)
 
-        coins = coinRepository.getAllNotCollected()
+        coins = coinRepository.getAllCollected()
     }
 
-    fun insert(coin: Coin) = coinRepository.insert(coin)
+    //fun insert(coin: Coin) = coinRepository.insert(coin)
 
-    fun setCollected(id: String) = coinRepository.setCollected(id)
+    //fun setCollected(id: String) = coinRepository.setCollected(id)
 
 }

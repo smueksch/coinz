@@ -1,11 +1,9 @@
 package com.coinz.app.activities
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import com.coinz.app.CoinListAdapter
+import com.coinz.app.adapters.CoinListAdapter
 import com.coinz.app.R
 
 import kotlinx.android.synthetic.main.activity_local_wallet.*
