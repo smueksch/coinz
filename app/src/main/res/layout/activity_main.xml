@@ -30,18 +30,9 @@
 
         <include layout="@layout/content_main" />
 
-        <!--
-        <com.mapbox.mapboxsdk.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            mapbox:mapbox_cameraTargetLat="55.943633"
-            mapbox:mapbox_cameraTargetLng="-3.188637"
-            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
-            mapbox:mapbox_cameraZoom="16" />
-            -->
-
+        <!-- Need layout behavior below so fragment content isn't hidden behind app bar. -->
         <FrameLayout
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
