@@ -11,9 +11,6 @@
         <item
             android:id="@+id/nav_central_bank"
             android:title="@string/nav_central_bank" />
-        <item
-            android:id="@+id/nav_send_change"
-            android:title="@string/nav_send_change" />
     </group>
 
 
