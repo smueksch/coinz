@@ -19,6 +19,7 @@ import com.coinz.app.R
 import com.coinz.app.database.Coin
 import com.coinz.app.fragments.CollectCoinDialogFragment
 import com.coinz.app.fragments.LocalWalletFragment
+import com.coinz.app.fragments.MapFragment
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.*
 import com.mapbox.android.core.location.LocationEngine
@@ -34,33 +35,34 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.MapboxMapOptions
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
-import com.mapbox.mapboxsdk.maps.SupportMapFragment
+import com.mapbox.mapboxsdk.maps.*
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
 
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineListener,
-                     PermissionsListener, OnCollectCoinListener {
+class MainActivity : AppCompatActivity()/*, OnMapReadyCallback, LocationEngineListener,
+                     PermissionsListener, OnCollectCoinListener*/ {
 
     companion object {
         const val tag = "MainActivity"
     }
 
+    private lateinit var mapFragment: MapFragment
+
+    /*
     private lateinit var coinViewModel: MapCoinsViewModel
 
     private var map: MapboxMap? = null
 
-    private lateinit var mapFragment: SupportMapFragment
+    //private lateinit var mapFragment: SupportMapFragment
 
     private lateinit var origin: Location
     private var permissionsManager = PermissionsManager(this)
     private lateinit var locationEngine: LocationEngine
     private lateinit var locationLayerPlugin: LocationLayerPlugin
+    */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,26 +77,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
             val fragmentManager: FragmentManager = supportFragmentManager
             val transaction: FragmentTransaction = fragmentManager.beginTransaction()
 
+            /*
             // Call map fragment.
             val centralCampus = LatLng(55.943633, -3.188637)
 
             val mapOptions = MapboxMapOptions()
+            mapOptions.styleUrl("mapbox://styles/mapbox/streets-v10")
             with(CameraPosition.Builder()) {
                 target(centralCampus)
                 zoom(AppConsts.initialCameraZoom)
                 mapOptions.camera(build())
-            }
+            }*/
 
-            mapFragment = SupportMapFragment.newInstance(mapOptions)
+            //mapFragment = SupportMapFragment.newInstance(mapOptions)
+            mapFragment = MapFragment.newInstance()
             transaction.add(R.id.fragment_container, mapFragment, "com.mapbox.map")
 
             //transaction.addToBackStack("mapbox.map") // TODO: should be same as ID above?
 
             transaction.commit()
         } else {
-            mapFragment = supportFragmentManager.findFragmentByTag("com.mapbox.map") as SupportMapFragment
+            //mapFragment = supportFragmentManager.findFragmentByTag("com.mapbox.map") as SupportMapFragment
+            mapFragment = supportFragmentManager.findFragmentByTag("com.mapbox.map") as MapFragment
         }
 
+        /*
         // TODO: Do we still need the onMapReady callback in the main activity then?
         mapFragment.getMapAsync { mapboxMap ->
             if (mapboxMap == null) {
@@ -134,7 +141,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
                 // Do initial rendering of all markers.
                 coinViewModel.coins?.value?.forEach { addMarker(mapboxMap, it) }
             }
-        }
+        }*/
 
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
@@ -194,6 +201,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         // Set map item in menu to be active on start-up.
         nav_view.menu.getItem(NavDrawerMenu.Map.index).isChecked = true
 
+        /*
         coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
         //coinViewModel.collectedCoins?.observe(this, Observer { coins -> })
         coinViewModel.coins?.observe(this, Observer<List<Coin>> { coins ->
@@ -204,46 +212,46 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
 
             // Add in the new markers for the new set of coins:
             coins?.forEach { addMarker(map, it) }
-        })
+        })*/
     }
 
     override fun onStart() {
         super.onStart()
-        mapView.onStart()
+        //mapView.onStart()
 
         restorePreferences()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        //mapView.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        //mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
+        //mapView.onStop()
 
         savePreferences()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        //mapView.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        //mapView.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
-        mapView.onSaveInstanceState(outState)
+        //mapView.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -269,6 +277,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         }
     }
 
+    /**
+     * Save preferences to SharedPreferences file.
+     */
+    private fun savePreferences() {
+        val settings = getSharedPreferences(AppConsts.preferencesFilename,
+                Context.MODE_PRIVATE)
+        val editor = settings.edit()
+
+        editor.apply()
+    }
+
+    /**
+     * Restore preferences from SharedPreferences file.
+     */
+    private fun restorePreferences() {
+        val settings = getSharedPreferences(AppConsts.preferencesFilename,
+                Context.MODE_PRIVATE)
+    }
+
+    /*
     override fun onMapReady(mapboxMap: MapboxMap?) {
         if (mapboxMap == null) {
             AppLog(tag, "onMapReady", "mapboxMap is null")
@@ -365,25 +393,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
         collectCoinDialog.show(ft, "collectDialog")
     }
 
-    /**
-     * Save preferences to SharedPreferences file.
-     */
-    private fun savePreferences() {
-        val settings = getSharedPreferences(AppConsts.preferencesFilename,
-                                            Context.MODE_PRIVATE)
-        val editor = settings.edit()
-
-        editor.apply()
-    }
-
-    /**
-     * Restore preferences from SharedPreferences file.
-     */
-    private fun restorePreferences() {
-        val settings = getSharedPreferences(AppConsts.preferencesFilename,
-                                            Context.MODE_PRIVATE)
-    }
-
     private fun enableLocation() {
         val funTag = "[enableLocation]"
 
@@ -466,4 +475,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, LocationEngineList
     private fun locationToLatLng(location: Location): LatLng {
         return LatLng(location.latitude, location.longitude)
     }
+    */
 }

@@ -30,6 +30,7 @@
 
         <include layout="@layout/content_main" />
 
+        <!--
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
@@ -38,6 +39,7 @@
             mapbox:mapbox_cameraTargetLng="-3.188637"
             mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
             mapbox:mapbox_cameraZoom="16" />
+            -->
 
         <FrameLayout
             android:id="@+id/fragment_container"

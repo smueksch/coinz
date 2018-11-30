@@ -43,7 +43,9 @@ class CollectCoinDialogFragment: DialogFragment() {
         super.onCreate(savedInstanceState)
 
         try {
-            callback = activity as OnCollectCoinListener
+            // TODO: Can we handle the case where the caller is an activity? Do we need to?
+            //callback = activity as OnCollectCoinListener
+            callback = parentFragment as OnCollectCoinListener
         } catch (e: java.lang.ClassCastException) {
             throw ClassCastException("Calling activity must implement OnCollectCoinListener")
         }
