@@ -3,11 +3,13 @@ package com.coinz.app.fragments
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.TypedArray
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +24,6 @@ import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
-import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.Marker
@@ -46,7 +46,7 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
  * coin collection dialog handling.
  */
 class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
-                    PermissionsListener, OnCollectCoinListener {
+                    OnCollectCoinListener {
 
     companion object {
         const val logTag = "MapFragment"
@@ -59,7 +59,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
 
     // Have to wait with initialization until fragment is attached to an activity.
     private lateinit var associatedContext: Context
-    // TODO: Could do without this?
     private lateinit var associatedActivity: FragmentActivity
 
     private lateinit var coinViewModel: MapCoinsViewModel
@@ -68,9 +67,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
     private lateinit var mapView: MapView
 
     private lateinit var origin: Location
-    private var permissionsManager = PermissionsManager(this)
     private lateinit var locationEngine: LocationEngine
     private lateinit var locationLayerPlugin: LocationLayerPlugin
+
+    /*
+     * Basic Fragment callbacks.
+     */
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -136,6 +138,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         mapView.onSaveInstanceState(outState)
     }
 
+    /*
+     * Mapbox relevant callbacks.
+     */
+
     override fun onMapReady(mapboxMap: MapboxMap?) {
         if (mapboxMap == null) {
             AppLog(logTag, "onMapReady", "mapboxMap is null")
@@ -185,35 +191,40 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
-    @SuppressWarnings("MissingPermission")
-    override fun onConnected() {
-        AppLog(logTag, "onConnected", "requesting location updates")
-        locationEngine.requestLocationUpdates()
-    }
-
-    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        AppLog(logTag, "onExplanationNeeded", "Permissions: $permissionsToExplain")
-        // TODO: Present pop-up message or dialogue
-    }
-
-    override fun onPermissionResult(granted: Boolean) {
-        AppLog(logTag, "onPermissionResult", "granted == $granted")
-        if (granted) {
-            enableLocation()
-        } else {
-            // TODO: open dialogue with user.
-            AppLog(logTag, "onPermissionResult", "Location permissions still not granted")
-        }
-    }
+    /*
+     * Location access callbacks/functions.
+     */
 
     private fun enableLocation() {
-        if (PermissionsManager.areLocationPermissionsGranted(associatedContext)) {
-            AppLog(logTag, "enableLocation", "Location permissions granted")
+        if (ContextCompat.checkSelfPermission(associatedActivity,
+                                              android.Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            AppLog(logTag, "enableLocation", "Location permission already granted")
             initializeLocationEngine()
             initializeLocationLayer()
         } else {
-            AppLog(logTag, "enableLocation", "Location permissions not granted")
-            permissionsManager.requestLocationPermissions(associatedActivity)
+            // Need to request permission.
+            // TODO: show explanation if needed according to:
+            // https://developer.android.com/training/permissions/requesting
+            AppLog(logTag, "enableLocation", "Location permission not yet granted, requesting")
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                               AppConsts.REQUEST_ACCESS_FINE_LOCATION)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode) {
+            AppConsts.REQUEST_ACCESS_FINE_LOCATION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    AppLog(logTag, "onRequestPermissionsResult", "Location permissions now granted")
+                    enableLocation()
+                } else {
+                    AppLog(logTag, "onRequestPermissionsResult", "Location permissions still not granted")
+                }
+                return
+            }
+            else -> {} // Ignore all other request codes.
         }
     }
 
@@ -249,16 +260,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    @SuppressWarnings("MissingPermission")
+    override fun onConnected() {
+        AppLog(logTag, "onConnected", "requesting location updates")
+        locationEngine.requestLocationUpdates()
+    }
+
     private fun setCameraPosition(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    // TODO: Document. Essentially puts an observer on the view model.
-    // Needs to be called after mapboxMap is initialized, i.e. in onMapReady at earliest.
+    /*
+     * Coin/Marker relevant functions.
+     */
+
+    /**
+     * Initialize internal coin data representation.
+     *
+     * ATTENTION: Needs to be called after mapboxMap is initialized, otherwise an exception is
+     * throw.
+     *
+     * Put observer on the internal coin view model representing the coins and hence markers shown
+     * on the map.
+     */
     private fun initializeCoinViewModel() {
         coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
-        //coinViewModel.collectedCoins?.observe(this, Observer { coins -> })
         coinViewModel.coins?.observe(this, Observer<List<Coin>> { coins ->
             // Remove all current markers.
             // Note: Seems a bit wasteful if only one coin is updated. However, we don't know
