@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.location.Location
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,10 +37,14 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
-import kotlinx.android.synthetic.main.fragment_map.*
 
-// Define our own map fragment, because mapbox.SupportMapFragment isn't sufficient, misses all the
-// enable location business.
+/**
+ * Fragment presenting map to user.
+ *
+ * Note: Mapbox does offer a SupportMapFragment, but it is quite limited and missing some of the
+ * functionality we need for our usecase, for instance the location permission requests and the
+ * coin collection dialog handling.
+ */
 class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
                     PermissionsListener, OnCollectCoinListener {
 
@@ -55,15 +57,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
-    // Throw exceptions if we don't have associated activity and context as we need both for proper
-    // operation.
-    // TODO: replace owner with associated.
-    //private val ownerActivity = requireActivity()
-    //private val ownerContext = requireContext()
-
     // Have to wait with initialization until fragment is attached to an activity.
     private lateinit var associatedContext: Context
-    // TODO: Could do without if we changed the way dialog is called.
+    // TODO: Could do without this?
     private lateinit var associatedActivity: FragmentActivity
 
     private lateinit var coinViewModel: MapCoinsViewModel
@@ -89,11 +85,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         super.onCreate(savedInstanceState)
 
         Mapbox.getInstance(associatedContext, AppConsts.mapboxToken)
-
-        /*
-        map_view.onCreate(savedInstanceState)
-        map_view.getMapAsync(this)
-        */
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -140,9 +131,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         mapView.onDestroy()
     }
 
-    // ATTENTION: This function may turn out to be problematic.
-    fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState)//, outPersistentState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
     }
 
@@ -176,11 +166,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
                 showMarkerDialog(marker)
 
                 true // Consume event.
-                /*
-                 * NB: if we put "true" in here the onClick event is consumed, so there is no small
-                 * Mapbox popup with title and snipped over the marker. If we put "false, we still
-                 * call this listener, but also get a Mapbox popup with title and marker.
-                 */
+                // NB: if we put "true" in here the onClick event is consumed, so there is no small
+                // Mapbox popup with title and snipped over the marker. If we put "false, we still
+                // call this listener, but also get a Mapbox popup with title and marker.
             }
 
             // Do initial rendering of all markers.
@@ -252,17 +240,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
 
     @SuppressWarnings("MissingPermission")
     private fun initializeLocationLayer() {
-        // TODO: Remove this if if it's really not needed.
-        if (mapboxMap == null) {
-            AppLog(logTag, "initializeLocationLayer", "map is null")
-        } else {
-            locationLayerPlugin = LocationLayerPlugin(mapView, mapboxMap, locationEngine)
+        locationLayerPlugin = LocationLayerPlugin(mapView, mapboxMap, locationEngine)
 
-            locationLayerPlugin.apply {
-                setLocationLayerEnabled(true)
-                cameraMode = CameraMode.TRACKING
-                renderMode = RenderMode.NORMAL
-            }
+        locationLayerPlugin.apply {
+            setLocationLayerEnabled(true)
+            cameraMode = CameraMode.TRACKING
+            renderMode = RenderMode.NORMAL
         }
     }
 
@@ -292,9 +275,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
     }
 
     private fun showMarkerDialog(marker: Marker) {
-        // ATTENTION: This use of activity could cause major issue, may be better to find a way
-        // to start one fragment from the other.
-        // TODO: Try to follow the above about fragment starting.
         val ft = childFragmentManager.beginTransaction()
         val previous = childFragmentManager.findFragmentByTag("collectDialog")
         previous?.let {
@@ -340,6 +320,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
             val iconIndex = IconIndex(coin.markerSymbol, coin.markerColor)
 
             icon = iconFactory.fromResource(icons.getResourceId(iconIndex, 0))
+
+            icons.recycle()
         }
 
         mapboxMap?.addMarker(markerOpt)
