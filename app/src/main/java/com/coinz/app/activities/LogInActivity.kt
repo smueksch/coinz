@@ -57,16 +57,14 @@ class LogInActivity : AppCompatActivity() {
         val email: String? = log_in_email.text.toString()
         val password: String? = log_in_password.text.toString()
 
-        // TODO: Should this Toast messages be AppConsts?
         if (email.isNullOrEmpty()) {
-            Toast.makeText(applicationContext, "Please enter email address!",
+            Toast.makeText(applicationContext, getString(R.string.log_in_enter_email_prompt),
                            Toast.LENGTH_SHORT).show()
             return
         }
 
-        // TODO: Should this Toast messages be AppConsts?
         if (password.isNullOrEmpty()) {
-            Toast.makeText(applicationContext, "Please enter password!",
+            Toast.makeText(applicationContext, getString(R.string.log_in_enter_password_prompt),
                     Toast.LENGTH_SHORT).show()
             return
         }
@@ -76,15 +74,14 @@ class LogInActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email!!, password!!).addOnCompleteListener(this) {task ->
             if (task.isSuccessful) {
                 // Log in succeeded, let user know and go to main activity.
-                // TODO: Should this Toast messages be AppConsts?
-                Toast.makeText(applicationContext, "Logged in",
+                Toast.makeText(applicationContext, getString(R.string.log_in_success_prompt),
                         Toast.LENGTH_SHORT).show()
 
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else {
                 // Log in failed, let user know.
-                Toast.makeText(applicationContext, "Log in failed!",
+                Toast.makeText(applicationContext, getString(R.string.log_in_failure_prompt),
                         Toast.LENGTH_SHORT).show()
             }
         }

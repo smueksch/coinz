@@ -8,10 +8,19 @@
     <string name="coin_marker_snippet">Value</string>
 
     <!-- LogInActivity -->
+
+    <!-- Layout -->
     <string name="log_in_email_hint">Email</string>
     <string name="log_in_password_hint">Password</string>
     <string name="log_in_button_text">Log In</string>
     <string name="log_in_create_account"><u>New to Coinz? Create an account!</u></string>
+
+    <!-- Toasts -->
+    <string name="log_in_enter_email_prompt">Please enter email address!</string>
+    <string name="log_in_enter_password_prompt">Please enter password!</string>
+    <string name="log_in_success_prompt">Logged in!</string>
+    <string name="log_in_failure_prompt">Log in failed!</string>
+
 
     <!-- Navigation Drawer -->
     <string name="nav_header_title">Coinz</string>
