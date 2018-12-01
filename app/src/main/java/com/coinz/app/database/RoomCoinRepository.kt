@@ -8,10 +8,10 @@ import com.coinz.app.utils.DateUtil
 import com.coinz.app.utils.UrlUtil
 import com.coinz.app.utils.AppLog
 
-class CoinRepository(private val context: Context, private val coinDao: CoinDAO?) {
+class RoomCoinRepository(private val context: Context, private val roomCoinDao: RoomCoinDAO?) {
 
     companion object {
-        const val tag = "CoinRepository"
+        const val tag = "RoomCoinRepository"
         const val COLLECTED = true
         const val NOT_COLLECTED = false
     }
@@ -20,24 +20,24 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
         updateDatabase()
     }
 
-    fun getCoin(id: String) = coinDao?.let {
+    fun getCoin(id: String) = roomCoinDao?.let {
         updateDatabase()
         GetCoinTask(it).execute(id).get()
     }
 
-    fun getAllCollected() = coinDao?.let {
+    fun getAllCollected() = roomCoinDao?.let {
         updateDatabase()
         GetByIsCollectedTask(it).execute(COLLECTED).get()
     }
 
-    fun getAllNotCollected() = coinDao?.let {
+    fun getAllNotCollected() = roomCoinDao?.let {
         updateDatabase()
         GetByIsCollectedTask(it).execute(NOT_COLLECTED).get()
     }
 
-    fun insert(coin: Coin) = coinDao?.let { InsertTask(it).execute(coin) }
+    fun insert(roomCoin: RoomCoin) = roomCoinDao?.let { InsertTask(it).execute(roomCoin) }
 
-    fun setCollected(id: String) = coinDao?.let { SetCollectedTask(it).execute(id) }
+    fun setCollected(id: String) = roomCoinDao?.let { SetCollectedTask(it).execute(id) }
 
     /**
      * Update database from network if needed.
@@ -54,7 +54,7 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
         val mapDownloadDate = settings.getString(AppConsts.mapDownloadDate, "")
         val currentDate = DateUtil.currentDate()
 
-        coinDao?.let {
+        roomCoinDao?.let {
             if (mapDownloadDate != currentDate) {
                 AppLog(tag, "updateDatabase", "Database invalid, mapDownloadDate=$mapDownloadDate")
 
@@ -76,7 +76,7 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
 
                 editor.apply()
 
-                val coins = Coin.fromGeoJSON(rawMapData, currentDate) ?: ArrayList<Coin>()
+                val coins = RoomCoin.fromGeoJSON(rawMapData, currentDate) ?: ArrayList<RoomCoin>()
                 AppLog(tag, "updateDatabase", "coins[0]=${coins[0]}")
 
                 // Insert the new coins into the database and wait for task to finish.

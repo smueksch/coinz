@@ -3,26 +3,26 @@ package com.coinz.app.database.viewmodels
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import com.coinz.app.database.Coin
-import com.coinz.app.database.CoinDatabase
-import com.coinz.app.database.CoinRepository
+import com.coinz.app.database.RoomCoin
+import com.coinz.app.database.RoomCoinDatabase
+import com.coinz.app.database.RoomCoinRepository
 
 class MapCoinsViewModel(application: Application): AndroidViewModel(application) {
 
-    private var coinRepository: CoinRepository
+    private var roomCoinRepository: RoomCoinRepository
 
-    var coins: LiveData<List<Coin>>?
+    var coins: LiveData<List<RoomCoin>>?
 
     init {
         // TODO: Should this really be a ?. safe call? Can we make it like in tutorial?
-        val coinDAO = CoinDatabase.getInstance(application)?.coinDao()
-        coinRepository = CoinRepository(application, coinDAO)
+        val coinDAO = RoomCoinDatabase.getInstance(application)?.coinDao()
+        roomCoinRepository = RoomCoinRepository(application, coinDAO)
 
-        coins = coinRepository.getAllNotCollected()
+        coins = roomCoinRepository.getAllNotCollected()
     }
 
-    fun insert(coin: Coin) = coinRepository.insert(coin)
+    fun insert(roomCoin: RoomCoin) = roomCoinRepository.insert(roomCoin)
 
-    fun setCollected(id: String) = coinRepository.setCollected(id)
+    fun setCollected(id: String) = roomCoinRepository.setCollected(id)
 
 }

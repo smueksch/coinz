@@ -14,7 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
-import com.coinz.app.database.Coin
+import com.coinz.app.database.RoomCoin
 import com.coinz.app.database.viewmodels.MapCoinsViewModel
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppConsts
@@ -272,7 +272,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
     }
 
     /*
-     * Coin/Marker relevant functions.
+     * RoomCoin/Marker relevant functions.
      */
 
     /**
@@ -286,7 +286,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
      */
     private fun initializeCoinViewModel() {
         coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
-        coinViewModel.coins?.observe(this, Observer<List<Coin>> { coins ->
+        coinViewModel.coins?.observe(this, Observer<List<RoomCoin>> { coins ->
             // Remove all current markers.
             // Note: Seems a bit wasteful if only one coin is updated. However, we don't know
             // ahead of time how many coins have been updated.
@@ -336,19 +336,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
 
     // TODO: Move this into a class where it's more appropriate
     // TODO: this could be made into a Kotlin like extension of MapboxMap.
-    private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
+    private fun addMarker(mapboxMap: MapboxMap?, roomCoin: RoomCoin) {
         val markerOpt = MarkerOptions().apply {
-            position = LatLng(coin.latitude, coin.longitude)
+            position = LatLng(roomCoin.latitude, roomCoin.longitude)
 
-            // Set marker title to coin ID so we can retrieve all data associated with Coin simply
+            // Set marker title to roomCoin ID so we can retrieve all data associated with RoomCoin simply
             // by getting the title of the marker later on. Important for onMarkerClickListener.
-            title = coin.id
+            title = roomCoin.id
 
-            // Set custom marker icon depending on coin data.
+            // Set custom marker icon depending on roomCoin data.
             val icons: TypedArray = resources.obtainTypedArray(R.array.marker_drawables)
 
             val iconFactory = IconFactory.getInstance(associatedContext)
-            val iconIndex = IconIndex(coin.markerSymbol, coin.markerColor)
+            val iconIndex = IconIndex(roomCoin.markerSymbol, roomCoin.markerColor)
 
             icon = iconFactory.fromResource(icons.getResourceId(iconIndex, 0))
 

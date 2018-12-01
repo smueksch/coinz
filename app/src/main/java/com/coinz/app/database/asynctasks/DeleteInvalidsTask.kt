@@ -1,14 +1,14 @@
 package com.coinz.app.database.asynctasks
 
 import android.os.AsyncTask
-import com.coinz.app.database.CoinDAO
+import com.coinz.app.database.RoomCoinDAO
 
 /**
  * Task to delete all coins that do not have the given validity date.
  */
-class DeleteInvalidsTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
+class DeleteInvalidsTask(daoRoom: RoomCoinDAO) : AsyncTask<String, Void, Void>() {
 
-    private var coinDAO = dao
+    private var coinDAO = daoRoom
 
     /**
      * Delete coins that do not have given validity date.

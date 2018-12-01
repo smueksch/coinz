@@ -2,13 +2,13 @@ package com.coinz.app.database.asynctasks
 
 import android.arch.lifecycle.LiveData
 import android.os.AsyncTask
-import com.coinz.app.database.Coin
-import com.coinz.app.database.CoinDAO
+import com.coinz.app.database.RoomCoin
+import com.coinz.app.database.RoomCoinDAO
 
-class GetCoinTask(dao: CoinDAO) : AsyncTask<String, Void, LiveData<Coin>?>() {
+class GetCoinTask(daoRoom: RoomCoinDAO) : AsyncTask<String, Void, LiveData<RoomCoin>?>() {
 
-    private var coinDao = dao
+    private var coinDao = daoRoom
 
-    override fun doInBackground(vararg ids: String): LiveData<Coin>? = coinDao.get(ids[0])
+    override fun doInBackground(vararg ids: String): LiveData<RoomCoin>? = coinDao.get(ids[0])
 
 }

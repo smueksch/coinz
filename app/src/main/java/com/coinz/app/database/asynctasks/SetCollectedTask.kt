@@ -1,11 +1,11 @@
 package com.coinz.app.database.asynctasks
 
 import android.os.AsyncTask
-import com.coinz.app.database.CoinDAO
+import com.coinz.app.database.RoomCoinDAO
 
-class SetCollectedTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
+class SetCollectedTask(daoRoom: RoomCoinDAO) : AsyncTask<String, Void, Void>() {
 
-    private var coinDAO = dao
+    private var coinDAO = daoRoom
 
     override fun doInBackground(vararg strs: String): Void? {
         coinDAO.setCollected(strs[0])

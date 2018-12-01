@@ -7,17 +7,17 @@ import android.content.Context
 
 import com.coinz.app.utils.AppConsts
 
-@Database(entities = arrayOf(Coin::class), version = 1)
-abstract class CoinDatabase : RoomDatabase() {
+@Database(entities = arrayOf(RoomCoin::class), version = 1)
+abstract class RoomCoinDatabase : RoomDatabase() {
 
     companion object {
-        private var INSTANCE: CoinDatabase? = null
+        private var INSTANCE: RoomCoinDatabase? = null
 
-        fun getInstance(context: Context): CoinDatabase? {
+        fun getInstance(context: Context): RoomCoinDatabase? {
             if (INSTANCE == null) {
-                synchronized(CoinDatabase::class) {
+                synchronized(RoomCoinDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                                                    CoinDatabase::class.java,
+                                                    RoomCoinDatabase::class.java,
                                                     AppConsts.coinDbName).build()
                 }
             }
@@ -30,6 +30,6 @@ abstract class CoinDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun coinDao(): CoinDAO
+    abstract fun coinDao(): RoomCoinDAO
 
 }

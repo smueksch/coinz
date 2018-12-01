@@ -53,7 +53,7 @@ object AppConsts {
     const val coinDbName = "coin.db"
 
     /*
-     * Coin Collection:
+     * RoomCoin Collection:
      */
     const val maxCollectDist = 25.0 // Maximum coin collection distance in meters.
 }

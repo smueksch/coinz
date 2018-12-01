@@ -11,7 +11,7 @@ import com.mapbox.geojson.Point
 // for currencies available, separate table for marker-related info, e.g. marker_*, lat, long.
 // TODO: Document
 @Entity(tableName = "coins")
-data class Coin(
+data class RoomCoin(
         @PrimaryKey @ColumnInfo(name = "id") var id: String,
         @ColumnInfo(name = "currency") var currency: String,
         @ColumnInfo(name = "original_value") var originalValue: Double,
@@ -31,10 +31,10 @@ data class Coin(
          * @param geoJson Raw map data.
          * @return List of coins initialized with raw map data.
          */
-        fun fromGeoJSON(geoJson: String, validDate: String): List<Coin>? {
-            val coins = ArrayList<Coin>()
+        fun fromGeoJSON(geoJson: String, validDate: String): List<RoomCoin>? {
+            val coins = ArrayList<RoomCoin>()
             with(FeatureCollection.fromJson(geoJson)) {
-                this.features()?.forEach { coins.add(Coin(it, validDate)) }
+                this.features()?.forEach { coins.add(RoomCoin(it, validDate)) }
             }
             return coins
         }
@@ -44,7 +44,7 @@ data class Coin(
      * Create coin from GeoJSON feature.
      *
      * @param feature GeoJSON feature holding data for the coin.
-     * @param multiplier Coin value multiplier.
+     * @param multiplier RoomCoin value multiplier.
      */
     constructor(feature: Feature, validDate: String, multiplier: Double = 1.0):
             this("", "", 0.0, 0.0, "", "", 0.0, 0.0, false, validDate) {

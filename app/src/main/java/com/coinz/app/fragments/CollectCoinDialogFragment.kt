@@ -24,9 +24,9 @@ class CollectCoinDialogFragment: DialogFragment() {
          * Convenience function to populate a CollectCoinDialogFragment with parameters without
          * having to go through Fragment's put* and get* routines.
          *
-         * @param coinCurrency Coin currency
-         * @param coinId Coin ID
-         * @param coinValue Coin value
+         * @param coinCurrency RoomCoin currency
+         * @param coinId RoomCoin ID
+         * @param coinValue RoomCoin value
          * @param markerDist Distance from user to marker in meters
          *
          * @return New CollectCoinDialogFragment initialized with given parameters.
@@ -92,7 +92,7 @@ class CollectCoinDialogFragment: DialogFragment() {
                 setPositiveButton(getString(R.string.confirm_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickPositive", "Collect pressed")
 
-                    AppLog(logTag, "onClickPositive", "Setting Coin with id=$coinId to collected")
+                    AppLog(logTag, "onClickPositive", "Setting RoomCoin with id=$coinId to collected")
                     callback.onCollectCoin(coinId)
                 }
                 setNegativeButton(getString(R.string.cancel_coin_collection)) { _, _ ->

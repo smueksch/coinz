@@ -7,22 +7,22 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 
 @Dao
-interface CoinDAO {
+interface RoomCoinDAO {
 
     @Query("SELECT * FROM coins WHERE id = :id")
-    fun get(id: String): LiveData<Coin>?
+    fun get(id: String): LiveData<RoomCoin>?
 
     @Query("SELECT * FROM coins")
-    fun getAll(): LiveData<List<Coin>>?
+    fun getAll(): LiveData<List<RoomCoin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 1")
-    fun getAllCollected(): LiveData<List<Coin>>?
+    fun getAllCollected(): LiveData<List<RoomCoin>>?
 
     @Query("SELECT * FROM coins WHERE is_collected = 0")
-    fun getAllNotCollected(): LiveData<List<Coin>>?
+    fun getAllNotCollected(): LiveData<List<RoomCoin>>?
 
     @Insert(onConflict = REPLACE)
-    fun insert(vararg coins: Coin)
+    fun insert(vararg roomCoins: RoomCoin)
 
     /**
      * Mark given coin as collected.

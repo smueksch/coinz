@@ -1,14 +1,13 @@
 package com.coinz.app.adapters
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.coinz.app.R
-import com.coinz.app.database.Coin
+import com.coinz.app.database.RoomCoin
 
 class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
 
@@ -23,7 +22,7 @@ class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.Co
     private val inflater = LayoutInflater.from(context)
 
     // Cached copy of coins.
-    private var coins = emptyList<Coin>()
+    private var coins = emptyList<RoomCoin>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -42,8 +41,8 @@ class CoinListAdapter(context: Context): RecyclerView.Adapter<CoinListAdapter.Co
         holder.coinValue.text = currentCoin.storedValue.toString()
     }
 
-    internal fun setCoins(coins: List<Coin>) {
-        this.coins = coins
+    internal fun setCoins(roomCoins: List<RoomCoin>) {
+        this.coins = roomCoins
         notifyDataSetChanged()
     }
 
