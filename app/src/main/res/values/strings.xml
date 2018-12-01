@@ -21,6 +21,13 @@
     <string name="log_in_success_prompt">Logged in!</string>
     <string name="log_in_failure_prompt">Log in failed!</string>
 
+    <!-- CreateAccountActivity -->
+
+    <!-- Layout -->
+    <string name="create_acc_email_hint">Email</string>
+    <string name="create_acc_password_hint">Password</string>
+    <string name="create_acc_button_text">Create Account</string>
+    <string name="create_acc_log_in"><u>Already have a Coinz account? Log in!</u></string>
 
     <!-- Navigation Drawer -->
     <string name="nav_header_title">Coinz</string>

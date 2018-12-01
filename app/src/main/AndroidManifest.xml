@@ -29,7 +29,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.CreateAccountActivity"
-            android:label="CreateAccount"/>
+            android:label="CreateAccount"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
