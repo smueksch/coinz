@@ -8,6 +8,7 @@
     android:background="@color/colorPrimary">
 
     <TextView
+        android:id="@+id/create_acc_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/application_name"
@@ -18,6 +19,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/create_acc_email_layout"/>
+
+    <TextView
+        android:id="@+id/create_acc_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_acc_heading"
+        android:textColor="@color/loginText"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_acc_title"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/create_acc_email_layout"

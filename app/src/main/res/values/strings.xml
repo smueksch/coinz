@@ -10,6 +10,7 @@
     <!-- LogInActivity -->
 
     <!-- Layout -->
+    <string name="log_in_heading">Log In</string>
     <string name="log_in_email_hint">Email</string>
     <string name="log_in_password_hint">Password</string>
     <string name="log_in_button_text">Log In</string>
@@ -24,6 +25,7 @@
     <!-- CreateAccountActivity -->
 
     <!-- Layout -->
+    <string name="create_acc_heading">Account Creation</string>
     <string name="create_acc_email_hint">Email</string>
     <string name="create_acc_password_hint">Password</string>
     <string name="create_acc_button_text">Create Account</string>
