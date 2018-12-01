@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8sp"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/application_name"
+        android:textAllCaps="true"
+        android:textColor="@color/loginText"
+        android:textSize="48sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/log_in_email"/>
+
+    <EditText
+        android:id="@+id/log_in_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp"
+        android:hint="@string/log_in_email_hint"
+        android:textColor="@color/loginText"
+        android:textColorHint="@color/loginText"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/log_in_password"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/log_in_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp"
+        android:hint="@string/log_in_password_hint"
+        android:textColor="@color/loginText"
+        android:textColorHint="@color/loginText"
+        app:layout_constraintStart_toStartOf="@+id/log_in_email"
+        app:layout_constraintEnd_toEndOf="@+id/log_in_email"
+        app:layout_constraintTop_toBottomOf="@+id/log_in_email"
+        app:layout_constraintBottom_toTopOf="@+id/log_in_button"/>
+
+    <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4sp"
+        android:layout_marginEnd="4sp"
+        android:layout_marginTop="4sp"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/log_in_button_text"
+        android:textColor="@color/loginText"
+        app:layout_constraintStart_toStartOf="@+id/log_in_email"
+        app:layout_constraintEnd_toEndOf="@+id/log_in_email"
+        app:layout_constraintTop_toBottomOf="@+id/log_in_password"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/log_in_create_account_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/log_in_create_account"
+        android:textStyle=""
+        android:textAllCaps="false"
+        android:textColor="@color/loginText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_in_button"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+</android.support.constraint.ConstraintLayout>

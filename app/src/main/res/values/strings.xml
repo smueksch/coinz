@@ -1,11 +1,17 @@
 <resources>
-    <string name="app_name">Coinz</string>
+    <string name="application_name">Coinz</string>
     <string name="action_settings">Settings</string>
 
     <!-- MainActivity -->
     <!-- TODO: Should the colon be here or at location of invocation? -->
     <string name="coin_marker_title">Coin</string>
     <string name="coin_marker_snippet">Value</string>
+
+    <!-- LogInActivity -->
+    <string name="log_in_email_hint">Email</string>
+    <string name="log_in_password_hint">Password</string>
+    <string name="log_in_button_text">Log In</string>
+    <string name="log_in_create_account"><u>New to Coinz? Create an account!</u></string>
 
     <!-- Navigation Drawer -->
     <string name="nav_header_title">Coinz</string>

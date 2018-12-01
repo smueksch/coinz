@@ -1,6 +1,7 @@
 package com.coinz.app.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
@@ -12,6 +13,8 @@ import com.coinz.app.R
 import com.coinz.app.fragments.LocalWalletFragment
 import com.coinz.app.fragments.MapFragment
 import com.coinz.app.utils.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.mapbox.mapboxsdk.Mapbox
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         const val tag = "MainActivity"
     }
 
+    private lateinit var auth: FirebaseAuth
+
     private lateinit var mapFragment: MapFragment
     private lateinit var localWalletFragment: LocalWalletFragment
 
@@ -29,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        auth = FirebaseAuth.getInstance()
 
         Mapbox.getInstance(this, AppConsts.mapboxToken)
 
@@ -105,6 +112,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        ensureUserLoggedIn(auth.currentUser)
+
         restorePreferences()
     }
 
@@ -152,6 +161,22 @@ class MainActivity : AppCompatActivity() {
      * Restore preferences from SharedPreferences file.
      */
     private fun restorePreferences() {
+    }
+
+    /**
+     * Ensure user is logged in.
+     *
+     * Check whether the user is logged in. If they aren't, then open the log in activity to have
+     * them log in or create an account if they haven't done so yet.
+     *
+     * @param user User to check.
+     */
+    private fun ensureUserLoggedIn(user: FirebaseUser?) {
+        if (user == null) {
+            // No current user, need to require log in.
+            AppLog(tag, "ensureUserLoggedIn", "No user logged in, starting LogInActivity")
+            startActivity(Intent(this, LogInActivity::class.java))
+        }
     }
 
 }
