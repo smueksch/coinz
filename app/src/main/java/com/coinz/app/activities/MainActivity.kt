@@ -7,11 +7,10 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.coinz.app.R
 import com.coinz.app.fragments.LocalWalletFragment
 import com.coinz.app.fragments.MapFragment
@@ -21,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.mapbox.mapboxsdk.Mapbox
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.nav_drawer_header.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -102,7 +100,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     transaction.commit()
+                }
+                R.id.nav_log_out -> {
+                    // Log user out and go back to log in screen.
+                    auth.signOut()
 
+                    Toast.makeText(applicationContext, getString(R.string.log_out_prompt),
+                                   Toast.LENGTH_SHORT).show()
+
+                    startActivity(Intent(this, LogInActivity::class.java))
                 }
             }
 
