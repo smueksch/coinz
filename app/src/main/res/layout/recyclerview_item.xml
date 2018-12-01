@@ -30,11 +30,10 @@
             android:id="@+id/coin_card_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/coin_card_currency"
             app:layout_constraintTop_toBottomOf="@+id/coin_card_currency"
             tools:text="b0cf-c240-bcba-9661-fde2-e985" />
 
@@ -42,11 +41,11 @@
             android:id="@+id/coin_card_value_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="4sp"
             android:text="@string/coin_card_value_desc"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/coin_card_currency"
             app:layout_constraintTop_toBottomOf="@+id/coin_card_id" />
 
         <TextView
@@ -54,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="4sp"
             android:textAlignment="center"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -65,6 +65,7 @@
             android:id="@+id/coin_store_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
             android:text="@string/coin_card_store_button"
             app:layout_constraintTop_toBottomOf="@+id/coin_card_value_desc"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -73,6 +74,7 @@
             android:id="@+id/coin_send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
             android:text="@string/coin_card_send_button"
             app:layout_constraintTop_toBottomOf="@+id/coin_card_value_desc"
             app:layout_constraintEnd_toStartOf="@+id/coin_store_button"/>

@@ -14,12 +14,11 @@
     <string name="nav_central_bank">Central Bank</string>
 
     <!-- CollectCoinDialogFragment -->
-    <string name="coin_collect_dialog_title">Collect Coin?</string>
-    <string name="coin_currency_title">Currency:</string>
-    <string name="coin_value_title">Value:</string>
+    <string name="coin_collect_value_desc">Value:</string>
+    <string name="coin_collect_dist_desc">Distance:</string>
+    <string name="coin_collect_dist_unit">m</string>
     <string name="confirm_coin_collection">Collect</string>
     <string name="cancel_coin_collection">Cancel</string>
-    <string name="title_activity_local_wallet">LocalWalletActivity</string>
 
     <!-- LocalWallet -->
     <string name="coin_card_value_desc">Value:</string>

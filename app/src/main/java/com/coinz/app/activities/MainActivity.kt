@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mapFragment: MapFragment
+    private lateinit var localWalletFragment: LocalWalletFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,18 +32,18 @@ class MainActivity : AppCompatActivity() {
 
         Mapbox.getInstance(this, AppConsts.mapboxToken)
 
+        // Initialize map fragment.
         if (savedInstanceState == null) {
-            val fragmentManager: FragmentManager = supportFragmentManager
-            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
 
             mapFragment = MapFragment.newInstance()
             // TODO: give this a proper ID.
-            transaction.add(R.id.fragment_container, mapFragment, "com.mapbox.map")
+            transaction.add(R.id.fragment_container, mapFragment, AppConsts.mapFragmentTag)
 
             transaction.commit()
         } else {
             // TODO: give this a proper ID.
-            mapFragment = supportFragmentManager.findFragmentByTag("com.mapbox.map") as MapFragment
+            mapFragment = supportFragmentManager.findFragmentByTag(AppConsts.mapFragmentTag) as MapFragment
         }
 
         setSupportActionBar(toolbar)
@@ -59,29 +60,34 @@ class MainActivity : AppCompatActivity() {
             drawer_layout.closeDrawers()
 
             when(menuItem.itemId) {
+                // TODO: Turn these IDs into better named constanst
                 R.id.nav_map -> {
                     AppLog(tag, "navigationItemSelectedListener", "clicked Map menu item")
 
-                    val fragmentManager: FragmentManager = supportFragmentManager
-                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+                    val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
 
-                    transaction.apply {
-                        replace(R.id.fragment_container, mapFragment)
-                        //addToBackStack("mapbox.map")
-                    }
+                    transaction.replace(R.id.fragment_container, mapFragment)
 
                     transaction.commit()
                 }
                 R.id.nav_local_wallet -> {
                     AppLog(tag, "navigationItemSelectedListener", "clicked LocalWallet menu item")
 
-                    // TODO: Could we do this whole transaction business more compactly?
                     val fragmentManager: FragmentManager = supportFragmentManager
                     val transaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-                    transaction.apply {
-                        add(R.id.fragment_container, LocalWalletFragment.newInstance())
-                        //addToBackStack("local_wallet")
+                    // Try to load local wallet fragment if it's already been initialized and added.
+                    val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.localWalletFragmentTag)
+
+                    if (loadedFragment == null) {
+                        // Local wallet fragment not yet initialized, do it now.
+                        localWalletFragment = LocalWalletFragment.newInstance()
+                        transaction.add(R.id.fragment_container, localWalletFragment,
+                                        AppConsts.localWalletFragmentTag)
+                    } else {
+                        // Local wallet fragment already initialized, use existing version.
+                        localWalletFragment = loadedFragment as LocalWalletFragment
+                        transaction.replace(R.id.fragment_container, localWalletFragment)
                     }
 
                     transaction.commit()

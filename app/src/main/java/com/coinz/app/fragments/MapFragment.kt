@@ -309,16 +309,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
         ft.addToBackStack(null)
 
-        val collectCoinDialog = CollectCoinDialogFragment()
+        val coinId = marker.title // Recall that we're storing the coin ID in the marker's title.
 
-        // TODO: could we not pass arguments by defining a newInstance function for CollectCoinDialogFragment?
-        collectCoinDialog.arguments = Bundle().apply {
-            putCharSequence(CollectCoinDialogFragment.Args.coinId, marker.title)
+        // Find the coin the given marker belongs to by using the coin id.
+        // TODO: Could we move this into the MapsCoinViewModel, sth like selectById?
+        val coin = coinViewModel.coins?.value?.filter { c -> c.id == coinId }?.single()
 
-            // Compute distance from user to marker:
-            val markerDist = marker.position.distanceTo(locationToLatLng(origin))
-            putDouble(CollectCoinDialogFragment.Args.markerDist, markerDist)
-        }
+        val coinCurrency = coin?.currency ?: ""
+        val coinValue = coin?.originalValue ?: 0.0
+
+        // Compute distance from user to marker:
+        val markerDist = marker.position.distanceTo(locationToLatLng(origin))
+
+        val collectCoinDialog = CollectCoinDialogFragment.newInstance(coinCurrency, coinId,
+                                                                      coinValue, markerDist)
 
         // NOTE: Could be that putting null here is a problem!
         collectCoinDialog.setTargetFragment(null, 0)

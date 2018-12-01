@@ -18,6 +18,13 @@ object AppConsts {
     const val REQUEST_ACCESS_FINE_LOCATION = 1729
 
     /*
+     * Fragments:
+     */
+    // Tags used when adding fragments and to find them after they've been added.
+    const val mapFragmentTag = "MAP_FRAGMENT"
+    const val localWalletFragmentTag = "LOCALE_WALLET_FRAGMENT"
+
+    /*
      * Mapbox:
      */
     const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"

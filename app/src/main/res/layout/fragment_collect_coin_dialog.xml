@@ -1,49 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coin_card"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/coin_currency_title"
+        android:id="@+id/coin_collect_currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/coin_currency_title"
+        android:layout_marginStart="16sp"
+        android:layout_marginTop="8sp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="QUID" />
 
     <TextView
-        android:id="@+id/coin_currency_desc"
+        android:id="@+id/coin_collect_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/coin_collect_currency"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_currency"
+        tools:text="b0cf-c240-bcba-9661-fde2-e985" />
+
+    <TextView
+        android:id="@+id/coin_collect_value_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4sp"
+        android:text="@string/coin_collect_value_desc"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/coin_collect_currency"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_id" />
+
+    <TextView
+        android:id="@+id/coin_collect_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Currency Placeholder"
-        app:layout_constraintStart_toEndOf="@+id/coin_currency_title"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="4sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/coin_collect_value_desc"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_id"
+        tools:text="6.919867246692419" />
 
     <TextView
-        android:id="@+id/coin_value_title"
+        android:id="@+id/coin_collect_dist_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/coin_value_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coin_currency_title" />
+        android:text="@string/coin_collect_dist_desc"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/coin_collect_currency"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_value_desc"/>
 
     <TextView
-        android:id="@+id/coin_value_desc"
+        android:id="@+id/coin_collect_dist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Value Placeholder"
-        app:layout_constraintStart_toEndOf="@+id/coin_value_title"
-        app:layout_constraintTop_toBottomOf="@+id/coin_currency_desc" />
+        android:layout_marginStart="8sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/coin_collect_dist_desc"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_value_desc"
+        tools:text="26.5" />
+
+    <TextView
+        android:id="@+id/coin_collect_dist_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1sp"
+        android:text="@string/coin_collect_dist_unit"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/coin_collect_dist"
+        app:layout_constraintTop_toBottomOf="@+id/coin_collect_value_desc"/>
 
 </android.support.constraint.ConstraintLayout>
