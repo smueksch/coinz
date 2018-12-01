@@ -13,6 +13,5 @@ package com.coinz.app.utils
 enum class NavDrawerMenu(val index: Int) {
     Map(0),
     LocalWallet(1),
-    CentralBank(2),
-    SendChange(3)
+    CentralBank(2)
 }

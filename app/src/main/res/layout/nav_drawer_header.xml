@@ -6,20 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:background="?attr/colorPrimaryDark"
-    android:padding="16dp"
+    android:padding="16sp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
     android:gravity="bottom">
 
     <TextView
+        android:id="@+id/nav_drawer_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="32sp"
         android:text="@string/nav_header_title"
-        android:textSize="20sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/navDrawerHeader"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nav_drawer_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/navDrawerHeader"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/nav_drawer_title"
+        app:layout_constraintStart_toStartOf="@+id/nav_drawer_title"
+        tools:text="test@test.com"/>
 
 </android.support.constraint.ConstraintLayout>

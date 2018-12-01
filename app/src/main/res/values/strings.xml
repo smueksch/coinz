@@ -43,6 +43,7 @@
     <string name="nav_map">Map</string>
     <string name="nav_local_wallet">Local Wallet</string>
     <string name="nav_central_bank">Central Bank</string>
+    <string name="nav_log_out">Log Out</string>
 
     <!-- CollectCoinDialogFragment -->
     <string name="coin_collect_value_desc">Value:</string>

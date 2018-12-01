@@ -7,8 +7,11 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import com.coinz.app.R
 import com.coinz.app.fragments.LocalWalletFragment
 import com.coinz.app.fragments.MapFragment
@@ -18,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.mapbox.mapboxsdk.Mapbox
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.nav_drawer_header.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -107,6 +111,9 @@ class MainActivity : AppCompatActivity() {
         // Set map item in menu to be active on start-up.
         nav_view.menu.getItem(NavDrawerMenu.Map.index).isChecked = true
 
+        // Display current user's email in navigation drawer.
+        val navDrawerUser = nav_view.getHeaderView(0).findViewById<TextView>(R.id.nav_drawer_user)
+        navDrawerUser.text = auth.currentUser?.email ?: ""
     }
 
     override fun onStart() {
