@@ -25,6 +25,11 @@ object AppConsts {
     const val localWalletFragmentTag = "LOCALE_WALLET_FRAGMENT"
 
     /*
+     * Log in and account creation
+     */
+    const val minPasswordLength = 6 // Minimum password length in characters.
+
+    /*
      * Mapbox:
      */
     const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
@@ -50,6 +55,5 @@ object AppConsts {
     /*
      * Coin Collection:
      */
-    // Maximum coin collection distance in meters.
-    const val maxCollectDist = 25.0
+    const val maxCollectDist = 25.0 // Maximum coin collection distance in meters.
 }

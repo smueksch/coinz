@@ -17,8 +17,8 @@
     <string name="log_in_create_account"><u>New to Coinz? Create an account!</u></string>
 
     <!-- Toasts -->
-    <string name="log_in_enter_email_prompt">Please enter email address!</string>
-    <string name="log_in_enter_password_prompt">Please enter password!</string>
+    <string name="log_in_enter_email_prompt">Please enter an email address!</string>
+    <string name="log_in_enter_password_prompt">Please enter a password!</string>
     <string name="log_in_success_prompt">Logged in!</string>
     <string name="log_in_failure_prompt">Log in failed!</string>
 
@@ -30,6 +30,13 @@
     <string name="create_acc_password_hint">Password</string>
     <string name="create_acc_button_text">Create Account</string>
     <string name="create_acc_log_in"><u>Already have a Coinz account? Log in!</u></string>
+
+    <!-- Toasts -->
+    <string name="create_acc_enter_email_prompt">Please enter an email address!</string>
+    <string name="create_acc_enter_password_prompt">Please enter a password!</string>
+    <string name="create_acc_password_short_prompt">Password must be at least 6 characters!</string>
+    <string name="create_acc_success_prompt">Account created!</string>
+    <string name="create_acc_failure_prompt">Account creation failed!</string>
 
     <!-- Navigation Drawer -->
     <string name="nav_header_title">Coinz</string>
