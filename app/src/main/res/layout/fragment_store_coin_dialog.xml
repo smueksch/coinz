@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/store_coin_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16sp"
+        android:layout_marginTop="8sp"
+        android:text="@string/store_coin_question"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!--
+    <TextView
+        android:id="@+id/store_coin_curr_gold_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/store_coin_curr_gold_desc"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/store_coin_question"
+        app:layout_constraintTop_toBottomOf="@+id/store_coin_question"/>
+
+    <TextView
+        android:id="@+id/store_coin_curr_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/store_coin_curr_gold_desc"
+        app:layout_constraintTop_toBottomOf="@+id/store_coin_question"
+        tools:text="1729.12347890"/>
+
+    <TextView
+        android:id="@+id/store_coin_new_gold_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/store_coin_new_gold_desc"
+        app:layout_constraintStart_toStartOf="@+id/store_coin_question"
+        app:layout_constraintTop_toBottomOf="@+id/store_coin_curr_gold_desc"/>
+
+    <TextView
+        android:id="@+id/store_coin_new_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/store_coin_new_gold_desc"
+        app:layout_constraintTop_toBottomOf="@+id/store_coin_curr_gold_desc"
+        tools:text="6175.984731"/>
+    -->
+
+</android.support.constraint.ConstraintLayout>

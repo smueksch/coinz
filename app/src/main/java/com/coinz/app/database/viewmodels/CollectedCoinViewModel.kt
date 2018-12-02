@@ -21,6 +21,20 @@ class CollectedCoinViewModel(application: Application): AndroidViewModel(applica
         coins = coinRepository.getAllCollected()
     }
 
+    /**
+     * Return coin with given ID.
+     *
+     * @param coinId ID of requested coin.
+     */
+    fun getCoinById(coinId: String) = coinRepository.getCoinById(coinId)
+
+    /**
+     * Delete coin with given id.
+     *
+     * @param id ID of coin to be deleted.
+     */
+    fun deleteById(id: String) = coinRepository.deleteById(id)
+
     //fun insert(coin: Coin) = coinRepository.insert(coin)
 
     //fun setCollected(id: String) = coinRepository.setCollected(id)

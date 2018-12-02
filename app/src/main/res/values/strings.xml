@@ -57,4 +57,11 @@
     <string name="coin_card_value_desc">Value:</string>
     <string name="coin_card_store_button">Store</string>
     <string name="coin_card_send_button">Send</string>
+
+    <!-- StoreCoinDialogFragment -->
+    <string name="store_coin_question">Store Coin?</string>
+    <string name="store_coin_curr_gold_desc">Current GOLD:</string>
+    <string name="store_coin_new_gold_desc">Updated GOLD:</string>
+    <string name="store_coin_store_button">Store</string>
+    <string name="store_coin_cancel_button">Cancel</string>
 </resources>

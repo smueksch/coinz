@@ -42,4 +42,12 @@ interface CoinDAO {
      */
     @Query("DELETE FROM coins WHERE valid_date != :validDate")
     fun deleteInvalids(validDate: String)
+
+    /**
+     * Delete coin with given id.
+     *
+     * @param id ID of coin to be deleted.
+     */
+    @Query("DELETE FROM coins WHERE id = :id")
+    fun deleteById(id: String)
 }

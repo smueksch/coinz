@@ -12,11 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.adapters.CoinListAdapter
+import com.coinz.app.database.Coin
 import com.coinz.app.database.viewmodels.CollectedCoinViewModel
+import com.coinz.app.interfaces.OnStoreCoinListener
+import com.coinz.app.utils.AppLog
 
-class LocalWalletFragment : Fragment() {
+class LocalWalletFragment : Fragment(), OnStoreCoinListener {
 
     companion object {
+        const val logTag = "LocalWalletFragment"
+
         fun newInstance(): LocalWalletFragment {
             return LocalWalletFragment()
         }
@@ -40,7 +45,7 @@ class LocalWalletFragment : Fragment() {
         val fragmentView = inflater.inflate(R.layout.fragment_local_wallet, container, false)
 
         val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.coin_recyclerview)
-        val adapter = CoinListAdapter(associatedContext)
+        val adapter = CoinListAdapter(associatedContext, childFragmentManager)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(associatedContext)
@@ -55,6 +60,29 @@ class LocalWalletFragment : Fragment() {
         })
 
         return fragmentView
+    }
+
+    /**
+     * Callback for case that is requested to be stored.
+     *
+     * This callback is invoked in case the user requests to store a coin through the appropriate
+     * dialog. It will remove the coin from the local wallet and update the GOLD in the central
+     * bank accordingly.
+     *
+     * @param coinId ID of coin to be stored in central bank.
+     */
+    override fun onStoreCoin(coinId: String) {
+        AppLog(logTag, "onStoreCoin", "called with coinId=$coinId")
+
+        // Retrieve coin to be able to update the central bank's GOLD amount appropriately.
+        // NOTE: getCoinById returns a null, which is why we use this workaround below.
+        // TODO: Could we move this into the MapsCoinViewModel, sth like selectById?
+        val coin = coinViewModel.coins?.value?.filter { c -> c.id == coinId }?.single()
+
+        AppLog(logTag, "onStoreCoin", "retrieve coin has ID=${coin?.id}")
+
+        //coinViewModel.deleteById(coinId)
+        // TODO: update the GOLD value in central bank.
     }
 
 }

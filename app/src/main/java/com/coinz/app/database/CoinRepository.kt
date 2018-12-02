@@ -20,7 +20,7 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
         updateDatabase()
     }
 
-    fun getCoin(id: String) = coinDao?.let {
+    fun getCoinById(id: String) = coinDao?.let {
         updateDatabase()
         GetCoinTask(it).execute(id).get()
     }
@@ -38,6 +38,8 @@ class CoinRepository(private val context: Context, private val coinDao: CoinDAO?
     fun insert(coin: Coin) = coinDao?.let { InsertTask(it).execute(coin) }
 
     fun setCollected(id: String) = coinDao?.let { SetCollectedTask(it).execute(id) }
+
+    fun deleteById(id: String) = coinDao?.let { DeleteByIdTask(it).execute(id) }
 
     /**
      * Update database from network if needed.
