@@ -1,7 +1,6 @@
 package com.coinz.app.adapters
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.coinz.app.R
-import com.coinz.app.database.Coin
+import com.coinz.app.database.entities.Coin
 import com.coinz.app.fragments.StoreCoinDialogFragment
 
 class CoinListAdapter(context: Context,

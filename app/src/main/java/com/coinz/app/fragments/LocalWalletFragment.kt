@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.adapters.CoinListAdapter
-import com.coinz.app.database.Coin
 import com.coinz.app.database.viewmodels.CollectedCoinViewModel
 import com.coinz.app.interfaces.OnStoreCoinListener
 import com.coinz.app.utils.AppLog
@@ -75,11 +74,9 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         AppLog(logTag, "onStoreCoin", "called with coinId=$coinId")
 
         // Retrieve coin to be able to update the central bank's GOLD amount appropriately.
-        // NOTE: getCoinById returns a null, which is why we use this workaround below.
-        // TODO: Could we move this into the MapsCoinViewModel, sth like selectById?
-        val coin = coinViewModel.coins?.value?.filter { c -> c.id == coinId }?.single()
+        val coin = coinViewModel.getCoinById(coinId)
 
-        AppLog(logTag, "onStoreCoin", "retrieve coin has ID=${coin?.id}")
+        AppLog(logTag, "onStoreCoin", "retrieve coin has ID=${coin.id}")
 
         //coinViewModel.deleteById(coinId)
         // TODO: update the GOLD value in central bank.

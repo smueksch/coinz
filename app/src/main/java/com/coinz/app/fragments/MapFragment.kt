@@ -14,7 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
-import com.coinz.app.database.Coin
+import com.coinz.app.database.entities.Coin
 import com.coinz.app.database.viewmodels.MapCoinsViewModel
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppConsts
@@ -312,11 +312,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         val coinId = marker.title // Recall that we're storing the coin ID in the marker's title.
 
         // Find the coin the given marker belongs to by using the coin id.
-        // TODO: Could we move this into the MapsCoinViewModel, sth like selectById?
-        val coin = coinViewModel.coins?.value?.filter { c -> c.id == coinId }?.single()
+        val coin = coinViewModel.getCoinById(coinId)
 
-        val coinCurrency = coin?.currency ?: ""
-        val coinValue = coin?.originalValue ?: 0.0
+        val coinCurrency = coin.currency
+        val coinValue = coin.originalValue
 
         // Compute distance from user to marker:
         val markerDist = marker.position.distanceTo(locationToLatLng(origin))

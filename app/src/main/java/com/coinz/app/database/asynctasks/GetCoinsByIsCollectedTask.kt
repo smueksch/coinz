@@ -2,10 +2,10 @@ package com.coinz.app.database.asynctasks
 
 import android.arch.lifecycle.LiveData
 import android.os.AsyncTask
-import com.coinz.app.database.Coin
-import com.coinz.app.database.CoinDAO
+import com.coinz.app.database.entities.Coin
+import com.coinz.app.database.daos.CoinDAO
 
-class GetByIsCollectedTask(dao: CoinDAO) : AsyncTask<Boolean, Void, LiveData<List<Coin>>?>() {
+class GetCoinsByIsCollectedTask(dao: CoinDAO) : AsyncTask<Boolean, Void, LiveData<List<Coin>>>() {
 
     private var coinDao = dao
 

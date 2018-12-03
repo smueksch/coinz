@@ -1,12 +1,12 @@
 package com.coinz.app.database.asynctasks
 
 import android.os.AsyncTask
-import com.coinz.app.database.CoinDAO
+import com.coinz.app.database.daos.CoinDAO
 
 /**
  * Task to delete coin with a given id.
  */
-class DeleteByIdTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
+class DeleteCoinByIdTask(dao: CoinDAO) : AsyncTask<String, Void, Void>() {
 
     private var coinDAO = dao
 

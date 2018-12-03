@@ -50,7 +50,12 @@ object AppConsts {
     /*
      * Internal Storage:
      */
+    // Name of SQL database in which local data is stored.
     const val coinDbName = "coin.db"
+    // Name of table in which coins are stored.
+    const val coinsTableName = "coins"
+    // Name of table in which GOLD exchange rates are stored.
+    const val ratesTableName = "rates"
 
     /*
      * Coin Collection:
