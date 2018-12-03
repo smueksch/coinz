@@ -100,12 +100,20 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         val exchangeRate = rateViewModel.getRateByCurrency(coin.currency)
         AppLog(logTag, "onStoreCoin", "GOLD exchange rate for ${coin.currency} is ${exchangeRate.rate}")
 
-        val gold = coin.storedValue * exchangeRate.rate
+        val exchangeGold = coin.storedValue * exchangeRate.rate
 
-        AppLog(logTag, "onStoreCoin", "user currently has ${goldDatabase.getGold()} GOLD")
+        val currentGold = goldDatabase.getGold()
+        val currentNumStoredCoins = goldDatabase.getNumStoredCoins()
 
-        //coinViewModel.deleteById(coinId)
-        // TODO: update the GOLD value in central bank.
+        AppLog(logTag, "onStoreCoin", "user currently has $currentGold GOLD")
+
+        // Update the amount of GOLD in central bank as well as how many coins the user has stored
+        // today.
+        goldDatabase.setGold(currentGold + exchangeGold)
+        goldDatabase.setNumStoredCoins(currentNumStoredCoins + 1)
+
+        // Remove coin that we just stored in central bank from our local wallet
+        coinViewModel.deleteCoinById(coinId)
     }
 
 }
