@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.adapters.CoinListAdapter
 import com.coinz.app.database.viewmodels.CollectedCoinViewModel
+import com.coinz.app.database.viewmodels.RateViewModel
 import com.coinz.app.interfaces.OnStoreCoinListener
 import com.coinz.app.utils.AppLog
 
@@ -30,6 +31,7 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
     private lateinit var associatedContext: Context
 
     private lateinit var coinViewModel: CollectedCoinViewModel
+    private lateinit var rateViewModel: RateViewModel
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -53,10 +55,12 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         coinViewModel = ViewModelProviders.of(this).get(CollectedCoinViewModel::class.java)
         // TODO: coins should not be nullable -> adjust according to tutorial:
         // https://codelabs.developers.google.com/codelabs/android-room-with-a-view-kotlin/#8
-        coinViewModel.coins?.observe(this, Observer { coins ->
+        coinViewModel.coins.observe(this, Observer { coins ->
             // Update the cached copy of the coins in adapter.
             coins?.let { adapter.setCoins(it) }
         })
+
+        rateViewModel = ViewModelProviders.of(this).get(RateViewModel::class.java)
 
         return fragmentView
     }
@@ -75,8 +79,10 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
 
         // Retrieve coin to be able to update the central bank's GOLD amount appropriately.
         val coin = coinViewModel.getCoinById(coinId)
-
         AppLog(logTag, "onStoreCoin", "retrieve coin has ID=${coin.id}")
+
+        val exchangeRate = rateViewModel.getRateByCurrency(coin.currency)
+        AppLog(logTag, "onStoreCoin", "GOLD exchange rate for ${coin.currency} is ${exchangeRate.rate}")
 
         //coinViewModel.deleteById(coinId)
         // TODO: update the GOLD value in central bank.

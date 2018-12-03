@@ -1,6 +1,7 @@
 package com.coinz.app.database.asynctasks
 
 import android.os.AsyncTask
+import com.coinz.app.utils.AppLog
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -9,6 +10,7 @@ import java.net.URL
 class DownloadMapFileTask : AsyncTask<String, Void, String>() {
 
     override fun doInBackground(vararg urls: String): String = try {
+        AppLog("DownloadMapFileTask", "doInBackground", "downloading from url ${urls[0]}")
         loadFileFromNetwork(urls[0])
     } catch (e: IOException) {
         "Unable to load content: ${e.message}"
