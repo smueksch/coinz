@@ -7,6 +7,8 @@ import com.coinz.app.database.daos.RateDAO
 import com.coinz.app.database.asynctasks.DeleteInvalidsTask
 import com.coinz.app.database.asynctasks.DownloadMapFileTask
 import com.coinz.app.database.asynctasks.InsertCoinsTask
+import com.coinz.app.database.asynctasks.InsertRatesTask
+import com.coinz.app.database.entities.Rate
 import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.DateUtil
@@ -44,8 +46,7 @@ abstract class DatabaseUpdater(private val context: Context,
         val currentDate = DateUtil.currentDate()
 
         // TODO: Need to update exchange rates.
-        //if (mapDownloadDate != currentDate) {
-        if (true) { // FOR TESTING ONLY
+        if (mapDownloadDate != currentDate) {
             AppLog(tag, "updateDatabase", "Database invalid, mapDownloadDate=$mapDownloadDate")
 
             // Current database invalid, delete all data and wait for it to finish.
@@ -67,19 +68,31 @@ abstract class DatabaseUpdater(private val context: Context,
 
             editor.apply()
 
-            // Insert the new coins into the database and wait for task to finish.
+            // Extract coin data from map data.
             val coins = Coin.fromGeoJSON(rawMapData, currentDate)
                     ?: ArrayList()
             AppLog(CoinRepository.tag, "updateDatabase", "coins[0]=${coins[0]}")
 
+            // Insert the new coins into the database and wait for task to finish.
             AppLog(tag, "updateDatabase", "Inserting new coins into database")
             InsertCoinsTask(coinDao).execute(*coins.toTypedArray()).get()
 
-            // Insert new GOLD exchange rates into the database and wait for task to finish.
-            // TODO: Extract the exchange rates from the GeoJSON.
-            //val parsedMap = JSONObject(rawMapData)
+            // Extract GOLD exchange rates from map data.
+            val parsedMap = JSONObject(rawMapData)
+            val parsedRates = parsedMap.optJSONObject("rates") // TODO: Make "rates AppConsts.
+            AppLog(tag, "updateDatabase", "parsedMap.optJSONObject(\"rates\")=$parsedRates")
 
-            //AppLog(tag, "updateDatabase", "parsedMap.optJSONObject(\"rates\")=${parsedMap.optJSONObject("rates")}")
+            // Convert JSON rates into Rate objects we can store in our database.
+            val rates = ArrayList<Rate>()
+            AppConsts.supportedCurrencies.forEach {
+                val rate = Rate(it,
+                                parsedRates.optDouble(it),
+                                currentDate)
+                rates.add(rate)
+            }
+
+            // Insert new GOLD exchange rates into the database and wait for task to finish.
+            InsertRatesTask(rateDao).execute(*rates.toTypedArray()).get()
 
             AppLog(tag, "updateDatabase", "Finished updating database")
         }

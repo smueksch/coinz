@@ -17,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!--
     <TextView
         android:id="@+id/store_coin_curr_gold_desc"
         android:layout_width="wrap_content"
@@ -55,6 +54,5 @@
         app:layout_constraintStart_toEndOf="@+id/store_coin_new_gold_desc"
         app:layout_constraintTop_toBottomOf="@+id/store_coin_curr_gold_desc"
         tools:text="6175.984731"/>
-    -->
 
 </android.support.constraint.ConstraintLayout>

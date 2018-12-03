@@ -12,10 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.adapters.CoinListAdapter
+import com.coinz.app.database.GoldDatabase
 import com.coinz.app.database.viewmodels.CollectedCoinViewModel
 import com.coinz.app.database.viewmodels.RateViewModel
 import com.coinz.app.interfaces.OnStoreCoinListener
 import com.coinz.app.utils.AppLog
+import com.google.firebase.auth.FirebaseAuth
 
 class LocalWalletFragment : Fragment(), OnStoreCoinListener {
 
@@ -26,6 +28,9 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
             return LocalWalletFragment()
         }
     }
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var goldDatabase: GoldDatabase
 
     // Have to wait with initialization until fragment is attached to an activity.
     private lateinit var associatedContext: Context
@@ -41,26 +46,36 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         associatedContext = requireContext()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+
+        // Note: If we're in the Local Wallet then we will have required log in earlier, so we
+        // should always have a user at this stage.
+        val user = auth.currentUser?.email ?: ""
+        goldDatabase = GoldDatabase(user)
+
+        rateViewModel = ViewModelProviders.of(this).get(RateViewModel::class.java)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val fragmentView = inflater.inflate(R.layout.fragment_local_wallet, container, false)
 
         val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.coin_recyclerview)
-        val adapter = CoinListAdapter(associatedContext, childFragmentManager)
+        val adapter = CoinListAdapter(associatedContext, childFragmentManager, rateViewModel,
+                                      goldDatabase)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(associatedContext)
 
         // Add observer to the coin data.
         coinViewModel = ViewModelProviders.of(this).get(CollectedCoinViewModel::class.java)
-        // TODO: coins should not be nullable -> adjust according to tutorial:
-        // https://codelabs.developers.google.com/codelabs/android-room-with-a-view-kotlin/#8
         coinViewModel.coins.observe(this, Observer { coins ->
             // Update the cached copy of the coins in adapter.
             coins?.let { adapter.setCoins(it) }
         })
-
-        rateViewModel = ViewModelProviders.of(this).get(RateViewModel::class.java)
 
         return fragmentView
     }
@@ -81,8 +96,13 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         val coin = coinViewModel.getCoinById(coinId)
         AppLog(logTag, "onStoreCoin", "retrieve coin has ID=${coin.id}")
 
+        // Retrieve GOLD exchange rate for the coin.
         val exchangeRate = rateViewModel.getRateByCurrency(coin.currency)
         AppLog(logTag, "onStoreCoin", "GOLD exchange rate for ${coin.currency} is ${exchangeRate.rate}")
+
+        val gold = coin.storedValue * exchangeRate.rate
+
+        AppLog(logTag, "onStoreCoin", "user currently has ${goldDatabase.getGold()} GOLD")
 
         //coinViewModel.deleteById(coinId)
         // TODO: update the GOLD value in central bank.

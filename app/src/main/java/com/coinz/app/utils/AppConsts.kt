@@ -60,5 +60,15 @@ object AppConsts {
     /*
      * Coin Collection:
      */
-    const val maxCollectDist = 25.0 // Maximum coin collection distance in meters.
+    /**
+     * Currently supported currencies.
+     */
+    val supportedCurrencies = arrayOf("SHIL",
+                                      "DOLR",
+                                      "QUID",
+                                      "PENY")
+    // Maximum coin collection distance in meters.
+    const val maxCollectDist = 25.0
+    // Maximum bankable coins per day.
+    const val maxBankable = 25
 }

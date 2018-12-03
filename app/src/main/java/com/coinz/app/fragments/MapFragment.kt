@@ -286,7 +286,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
      */
     private fun initializeCoinViewModel() {
         coinViewModel = ViewModelProviders.of(this).get(MapCoinsViewModel::class.java)
-        coinViewModel.coins?.observe(this, Observer<List<Coin>> { coins ->
+        coinViewModel.coins.observe(this, Observer<List<Coin>> { coins ->
             // Remove all current markers.
             // Note: Seems a bit wasteful if only one coin is updated. However, we don't know
             // ahead of time how many coins have been updated.

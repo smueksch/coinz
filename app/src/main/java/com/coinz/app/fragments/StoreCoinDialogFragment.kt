@@ -25,15 +25,12 @@ class StoreCoinDialogFragment : DialogFragment() {
          * @param currGold Current amount of GOLD in central bank.
          * @param newGold New amount of GOLD in central bank if coin is stored.
          */
-        fun newInstance(coinId: String/*, currGold: Double, newGold: Double*/): StoreCoinDialogFragment {
+        fun newInstance(coinId: String, currGold: Double, newGold: Double): StoreCoinDialogFragment {
             val dialog = StoreCoinDialogFragment()
 
             dialog.coinId = coinId
-            // TODO: Enable showing the current and new amount of gold in dialog.
-            /*
             dialog.currGold = currGold
             dialog.newGold = newGold
-            */
 
             return dialog
         }
@@ -68,11 +65,9 @@ class StoreCoinDialogFragment : DialogFragment() {
                 // See: https://stackoverflow.com/questions/7508185/problem-inflating-custom-view-for-alertdialog-in-dialogfragment
                 val view = it.layoutInflater.inflate(R.layout.fragment_store_coin_dialog, null)
 
-                /*
                 // Populate the collection dialog.
                 view.findViewById<TextView>(R.id.store_coin_curr_gold).text = currGold.toString()
                 view.findViewById<TextView>(R.id.store_coin_new_gold).text = newGold.toString()
-                */
 
                 setView(view)
 

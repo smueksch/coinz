@@ -9,11 +9,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.coinz.app.R
+import com.coinz.app.database.GoldDatabase
 import com.coinz.app.database.entities.Coin
+import com.coinz.app.database.viewmodels.RateViewModel
 import com.coinz.app.fragments.StoreCoinDialogFragment
 
 class CoinListAdapter(context: Context,
-                      private val childFragmentManager: FragmentManager): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
+                      private val childFragmentManager: FragmentManager,
+                      private val rateViewModel: RateViewModel,
+                      private val goldDatabase: GoldDatabase): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
 
     inner class CoinViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -45,7 +49,9 @@ class CoinListAdapter(context: Context,
         holder.coinId.text = currentCoin.id
         holder.coinValue.text = currentCoin.storedValue.toString()
 
-        holder.coinStoreButton.setOnClickListener { _ -> showStoreCoinDialog(currentCoin.id) }
+        holder.coinStoreButton.setOnClickListener { _ ->
+            showStoreCoinDialog(currentCoin.id, currentCoin.currency, currentCoin.storedValue)
+        }
     }
 
     internal fun setCoins(coins: List<Coin>) {
@@ -55,7 +61,14 @@ class CoinListAdapter(context: Context,
 
     override fun getItemCount(): Int = coins.size
 
-    private fun showStoreCoinDialog(coinId: String) {
+    /**
+     * Show dialog to store coin in central bank.
+     *
+     * @param coinId ID of coin to be stored.
+     * @param coinCurrency Currency of coin to be stored.
+     * @param coinValue Value of coin to be stored.
+     */
+    private fun showStoreCoinDialog(coinId: String, coinCurrency: String, coinValue: Double) {
         val ft = childFragmentManager.beginTransaction()
         val previous = childFragmentManager.findFragmentByTag("storeCoinDialog")
         previous?.let {
@@ -63,7 +76,14 @@ class CoinListAdapter(context: Context,
         }
         ft.addToBackStack(null)
 
-        val collectCoinDialog = StoreCoinDialogFragment.newInstance(coinId)
+        // Get current GOLD amount.
+        val currentGold = goldDatabase.getGold()
+
+        // Compute how much GOLD will be in user's central bank once the coin is banked.
+        val exchangeRate = rateViewModel.getRateByCurrency(coinCurrency)
+        val updatedGold = currentGold + coinValue * exchangeRate.rate
+
+        val collectCoinDialog = StoreCoinDialogFragment.newInstance(coinId, currentGold, updatedGold)
 
         // NOTE: Could be that putting null here is a problem!
         collectCoinDialog.setTargetFragment(null, 0)
