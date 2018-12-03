@@ -64,4 +64,8 @@
     <string name="store_coin_new_gold_desc">Updated GOLD:</string>
     <string name="store_coin_store_button">Store</string>
     <string name="store_coin_cancel_button">Cancel</string>
+
+    <!-- CentralBank -->
+    <string name="central_bank_title"><u>Central Bank</u></string>
+    <string name="central_bank_gold_desc">Current amount of GOLD:</string>
 </resources>

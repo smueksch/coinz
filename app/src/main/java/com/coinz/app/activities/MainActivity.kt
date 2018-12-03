@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import com.coinz.app.R
+import com.coinz.app.fragments.CentralBankFragment
 import com.coinz.app.fragments.LocalWalletFragment
 import com.coinz.app.fragments.MapFragment
 import com.coinz.app.utils.*
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mapFragment: MapFragment
     private lateinit var localWalletFragment: LocalWalletFragment
+    private lateinit var centralBankFragment: CentralBankFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +101,28 @@ class MainActivity : AppCompatActivity() {
                         transaction.replace(R.id.fragment_container, localWalletFragment)
                     }
 
+                    transaction.commit()
+                }
+                R.id.nav_central_bank -> {
+                    AppLog(tag, "navigationItemSelectedListener", "clicked CentralBank menu item")
+
+                    val fragmentManager: FragmentManager = supportFragmentManager
+                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+                    // Try to load local wallet fragment if it's already been initialized and added.
+                    val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.centralBankFragmentTag)
+
+                    if (loadedFragment == null) {
+                        // Central bank fragment not yet initialized, do it now.
+                        centralBankFragment = CentralBankFragment.newInstance()
+                        transaction.add(R.id.fragment_container, centralBankFragment,
+                                AppConsts.centralBankFragmentTag)
+                    } else {
+                        // Central bank fragment already initialized, use existing version.
+                        centralBankFragment = loadedFragment as CentralBankFragment
+                        transaction.replace(R.id.fragment_container, centralBankFragment)
+                    }
+                    /**/
                     transaction.commit()
                 }
                 R.id.nav_log_out -> {

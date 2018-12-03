@@ -22,7 +22,8 @@ object AppConsts {
      */
     // Tags used when adding fragments and to find them after they've been added.
     const val mapFragmentTag = "MAP_FRAGMENT"
-    const val localWalletFragmentTag = "LOCALE_WALLET_FRAGMENT"
+    const val localWalletFragmentTag = "LOCAL_WALLET_FRAGMENT"
+    const val centralBankFragmentTag = "CENTRAL_BANK_FRAGMENT"
 
     /*
      * Log in and account creation
