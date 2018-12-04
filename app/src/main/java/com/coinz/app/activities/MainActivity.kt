@@ -25,13 +25,18 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        // Tag to identify log output of this activity.
         const val tag = "MainActivity"
     }
 
+    // Firebase authenticator object, used to access Firbase's account management.
     private lateinit var auth: FirebaseAuth
 
+    // Fragment used to display the actual map for the game.
     private lateinit var mapFragment: MapFragment
+    // Fragment used to display the contents of the local wallet.
     private lateinit var localWalletFragment: LocalWalletFragment
+    // Fragment used to display the status of the central bank.
     private lateinit var centralBankFragment: CentralBankFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,18 +50,20 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize map fragment.
         if (savedInstanceState == null) {
+            // Map fragment doesn't exist yet, create it.
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
 
             mapFragment = MapFragment.newInstance()
-            // TODO: give this a proper ID.
             transaction.add(R.id.fragment_container, mapFragment, AppConsts.mapFragmentTag)
 
             transaction.commit()
         } else {
-            // TODO: give this a proper ID.
+            // Map fragment should already exist, load it in.
             mapFragment = supportFragmentManager.findFragmentByTag(AppConsts.mapFragmentTag) as MapFragment
         }
 
+        // Set-up the action bar on the top of the screen with the navigation drawer and settings
+        // icons.
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -70,70 +77,13 @@ class MainActivity : AppCompatActivity() {
             // Close drawer when item is tapped.
             drawer_layout.closeDrawers()
 
+            // Assign each item in the navigation drawer the correct action.
             when(menuItem.itemId) {
                 // TODO: Turn these IDs into better named constanst
-                R.id.nav_map -> {
-                    AppLog(tag, "navigationItemSelectedListener", "clicked Map menu item")
-
-                    val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-
-                    transaction.replace(R.id.fragment_container, mapFragment)
-
-                    transaction.commit()
-                }
-                R.id.nav_local_wallet -> {
-                    AppLog(tag, "navigationItemSelectedListener", "clicked LocalWallet menu item")
-
-                    val fragmentManager: FragmentManager = supportFragmentManager
-                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-
-                    // Try to load local wallet fragment if it's already been initialized and added.
-                    val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.localWalletFragmentTag)
-
-                    if (loadedFragment == null) {
-                        // Local wallet fragment not yet initialized, do it now.
-                        localWalletFragment = LocalWalletFragment.newInstance()
-                        transaction.add(R.id.fragment_container, localWalletFragment,
-                                        AppConsts.localWalletFragmentTag)
-                    } else {
-                        // Local wallet fragment already initialized, use existing version.
-                        localWalletFragment = loadedFragment as LocalWalletFragment
-                        transaction.replace(R.id.fragment_container, localWalletFragment)
-                    }
-
-                    transaction.commit()
-                }
-                R.id.nav_central_bank -> {
-                    AppLog(tag, "navigationItemSelectedListener", "clicked CentralBank menu item")
-
-                    val fragmentManager: FragmentManager = supportFragmentManager
-                    val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-
-                    // Try to load local wallet fragment if it's already been initialized and added.
-                    val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.centralBankFragmentTag)
-
-                    if (loadedFragment == null) {
-                        // Central bank fragment not yet initialized, do it now.
-                        centralBankFragment = CentralBankFragment.newInstance()
-                        transaction.add(R.id.fragment_container, centralBankFragment,
-                                AppConsts.centralBankFragmentTag)
-                    } else {
-                        // Central bank fragment already initialized, use existing version.
-                        centralBankFragment = loadedFragment as CentralBankFragment
-                        transaction.replace(R.id.fragment_container, centralBankFragment)
-                    }
-                    /**/
-                    transaction.commit()
-                }
-                R.id.nav_log_out -> {
-                    // Log user out and go back to log in screen.
-                    auth.signOut()
-
-                    Toast.makeText(applicationContext, getString(R.string.log_out_prompt),
-                                   Toast.LENGTH_SHORT).show()
-
-                    startActivity(Intent(this, LogInActivity::class.java))
-                }
+                R.id.nav_map -> onMapItemClicked()
+                R.id.nav_local_wallet -> onLocalWalletItemClicked()
+                R.id.nav_central_bank -> onCentralBankItemClicked()
+                R.id.nav_log_out -> onLogOutItemClicked()
             }
 
             true
@@ -160,12 +110,18 @@ class MainActivity : AppCompatActivity() {
         savePreferences()
     }
 
+    /**
+     * Create the options menu on the top left of screen.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    /**
+     * Handle clicks to the action bar items.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -198,6 +154,93 @@ class MainActivity : AppCompatActivity() {
      * Restore preferences from SharedPreferences file.
      */
     private fun restorePreferences() {
+    }
+
+    /**
+     * Handle a click to the map item in the navigation drawer.
+     *
+     * Switches the current fragment to be the map fragment.
+     */
+    private fun onMapItemClicked() {
+        AppLog(tag, "navigationItemSelectedListener", "clicked Map menu item")
+
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+
+        transaction.replace(R.id.fragment_container, mapFragment)
+
+        transaction.commit()
+    }
+
+    /**
+     * Handle a click to the local wallet item in the navigation drawer.
+     *
+     * Switches the current fragment to be the local wallet fragment.
+     */
+    private fun onLocalWalletItemClicked() {
+        AppLog(tag, "navigationItemSelectedListener", "clicked LocalWallet menu item")
+
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        // Try to load local wallet fragment if it's already been initialized and added.
+        val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.localWalletFragmentTag)
+
+        if (loadedFragment == null) {
+            // Local wallet fragment not yet initialized, do it now.
+            localWalletFragment = LocalWalletFragment.newInstance()
+            transaction.add(R.id.fragment_container, localWalletFragment,
+                    AppConsts.localWalletFragmentTag)
+        } else {
+            // Local wallet fragment already initialized, use existing version.
+            localWalletFragment = loadedFragment as LocalWalletFragment
+            transaction.replace(R.id.fragment_container, localWalletFragment)
+        }
+
+        transaction.commit()
+    }
+
+    /**
+     * Handle a click to the central bank item in the navigation drawer.
+     *
+     * Switches the current fragment to be the central bank fragment.
+     */
+    private fun onCentralBankItemClicked() {
+        AppLog(tag, "navigationItemSelectedListener", "clicked CentralBank menu item")
+
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        // Try to load local wallet fragment if it's already been initialized and added.
+        val loadedFragment = fragmentManager.findFragmentByTag(AppConsts.centralBankFragmentTag)
+
+        if (loadedFragment == null) {
+            // Central bank fragment not yet initialized, do it now.
+            centralBankFragment = CentralBankFragment.newInstance()
+            transaction.add(R.id.fragment_container, centralBankFragment,
+                    AppConsts.centralBankFragmentTag)
+        } else {
+            // Central bank fragment already initialized, use existing version.
+            centralBankFragment = loadedFragment as CentralBankFragment
+            transaction.replace(R.id.fragment_container, centralBankFragment)
+        }
+        transaction.commit()
+    }
+
+    /**
+     * Handle a click to the log out item in the navigation drawer.
+     *
+     * Logs the user out of his account and turns back to the log in screen.
+     */
+    private fun onLogOutItemClicked() {
+        // Log user out and go back to log in screen.
+        auth.signOut()
+
+        // Notify the user they're now logged out.
+        Toast.makeText(applicationContext, getString(R.string.log_out_prompt),
+                Toast.LENGTH_SHORT).show()
+
+        // Go back to the log in screen.
+        startActivity(Intent(this, LogInActivity::class.java))
     }
 
     /**

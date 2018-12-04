@@ -9,12 +9,21 @@ import com.coinz.app.utils.AppLog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.content_log_in.*
 
+/**
+ * Activity managing the log in screen.
+ *
+ * Provides user with an interface to log into the app using Firebase, i.e. takes an email and a
+ * password and handles log in process. Also provides a link to the create account screen should
+ * the user not already have one.
+ */
 class LogInActivity : AppCompatActivity() {
 
     companion object {
+        // Tag used to identify the log output of this activity.
         const val tag = "LogInActivity"
     }
 
+    // Firebase authenticator object, used to access Firbase's account management.
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,12 +66,14 @@ class LogInActivity : AppCompatActivity() {
         val email: String? = log_in_email.text.toString()
         val password: String? = log_in_password.text.toString()
 
+        // Ensure user provides an email.
         if (email.isNullOrEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.log_in_enter_email_prompt),
                            Toast.LENGTH_SHORT).show()
             return
         }
 
+        // ensure user provides a password.
         if (password.isNullOrEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.log_in_enter_password_prompt),
                     Toast.LENGTH_SHORT).show()
@@ -71,6 +82,7 @@ class LogInActivity : AppCompatActivity() {
 
         // At this point we have assured neither email nor password are empty, so we can use safely
         // use !!.
+        // Log the user in using Firebase.
         auth.signInWithEmailAndPassword(email!!, password!!).addOnCompleteListener(this) {task ->
             if (task.isSuccessful) {
                 // Log in succeeded, let user know and go to main activity.

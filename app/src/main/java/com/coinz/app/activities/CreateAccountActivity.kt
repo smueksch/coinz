@@ -9,12 +9,19 @@ import com.coinz.app.utils.AppConsts
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.content_create_account.*
 
+/**
+ * Activity managing the account creating screen.
+ *
+ * This activity will create a screen for the user to create an account for our app using Firebase.
+ * It will take an email and a password and forward it to Firebase, making sure to handle cases
+ * where the user might already exists, password is too short, etc.
+ *
+ * The create account screen also provides a link to the log in screen should the user have an
+ * account already.
+ */
 class CreateAccountActivity : AppCompatActivity() {
 
-    companion object {
-        const val tag = "CreateAccountActivity"
-    }
-
+    // Firebase authenticator object, used to access Firbase's account management.
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +30,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        // Enable account creation through the create account button.
         create_acc_button.setOnClickListener { _ -> createAccount() }
 
         create_acc_log_in_button.setOnClickListener {
@@ -41,12 +49,14 @@ class CreateAccountActivity : AppCompatActivity() {
         val password: String? = create_acc_password.text.toString()
 
         // TODO: Should check that it's actually an email!
+        // Ensure user provided an email address.
         if (email.isNullOrEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.create_acc_enter_email_prompt),
                            Toast.LENGTH_SHORT).show()
             return
         }
 
+        // Ensure user provided a password.
         if (password.isNullOrEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.create_acc_enter_password_prompt),
                     Toast.LENGTH_SHORT).show()
@@ -56,12 +66,14 @@ class CreateAccountActivity : AppCompatActivity() {
         // From here on we can use !! for both email and password as we've ensured that neither
         // will be null by the above checks.
 
+        // Ensure user's password is long enough.
         if (password!!.length < AppConsts.minPasswordLength) {
             Toast.makeText(applicationContext, getString(R.string.create_acc_password_short_prompt),
                     Toast.LENGTH_SHORT).show()
             return
         }
 
+        // Create the user account using Firebase.
         auth.createUserWithEmailAndPassword(email!!, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 // Account created, tell user and go to main activity now.
