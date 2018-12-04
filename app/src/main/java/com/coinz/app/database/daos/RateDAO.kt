@@ -7,7 +7,8 @@ import android.arch.persistence.room.Query
 import com.coinz.app.database.entities.Rate
 
 /**
- * Access object to rates database table. Required by Room.
+ * Data access object to GOLD exchange rates database table. Required by Room to access actual GOLD
+ * exchange rates.
  */
 @Dao
 interface RateDAO {

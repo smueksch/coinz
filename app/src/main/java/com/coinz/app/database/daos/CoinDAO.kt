@@ -8,7 +8,7 @@ import android.arch.persistence.room.Query
 import com.coinz.app.database.entities.Coin
 
 /**
- * Data access object to coin table. Required by Room.
+ * Data access object to coin table. Required by Room to access the actual coin data.
  */
 @Dao
 interface CoinDAO {
@@ -23,16 +23,29 @@ interface CoinDAO {
     @Query("SELECT * FROM coins WHERE id = :id")
     fun get(id: String): Coin
 
-
+    /**
+     * Return observable list of all coins in local database.
+     */
     @Query("SELECT * FROM coins")
     fun getAll(): LiveData<List<Coin>>
 
+    /**
+     * Return observable list of all collected coins in local database.
+     */
     @Query("SELECT * FROM coins WHERE is_collected = 1")
     fun getAllCollected(): LiveData<List<Coin>>
 
+    /**
+     * Return observable list of all uncollected coins in local database.
+     */
     @Query("SELECT * FROM coins WHERE is_collected = 0")
     fun getAllNotCollected(): LiveData<List<Coin>>
 
+    /**
+     * Insert one or more coins into local database, replace if already exists.
+     *
+     * @param coins List of coins to be inserted.
+     */
     @Insert(onConflict = REPLACE)
     fun insert(vararg coins: Coin)
 

@@ -13,7 +13,6 @@ import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.DateUtil
 import com.coinz.app.utils.UrlUtil
-import com.google.gson.JsonObject
 import org.json.JSONObject
 
 /**
@@ -42,10 +41,13 @@ abstract class DatabaseUpdater(private val context: Context,
     protected fun updateDatabase() {
         val settings = context.getSharedPreferences(AppConsts.preferencesFilename,
                 Context.MODE_PRIVATE)
+
+        // Get last map download date and current date.
         val mapDownloadDate = settings.getString(AppConsts.mapDownloadDate, "")
         val currentDate = DateUtil.currentDate()
 
-        // TODO: Need to update exchange rates.
+        // Only run the next bit of code if we need a new map, because the map download date is not
+        // today's date.
         if (mapDownloadDate != currentDate) {
             AppLog(tag, "updateDatabase", "Database invalid, mapDownloadDate=$mapDownloadDate")
 
@@ -60,42 +62,77 @@ abstract class DatabaseUpdater(private val context: Context,
             AppLog(tag, "updateDatabase", "rawMapData=${rawMapData.take(100)}")
 
             // Update the last map download date.
-            val editor = settings.edit()
+            updateMapDownloadDate(currentDate)
 
-            AppLog(tag, "updateDatabase", "Setting mapDownloadDate to $currentDate in" +
-                    "SharedPreferences")
-            editor.putString(AppConsts.mapDownloadDate, currentDate)
+            // Update locally stored coins with new coins from downloaded map.
+            updateCoins(rawMapData, currentDate)
 
-            editor.apply()
-
-            // Extract coin data from map data.
-            val coins = Coin.fromGeoJSON(rawMapData, currentDate)
-                    ?: ArrayList()
-            AppLog(CoinRepository.tag, "updateDatabase", "coins[0]=${coins[0]}")
-
-            // Insert the new coins into the database and wait for task to finish.
-            AppLog(tag, "updateDatabase", "Inserting new coins into database")
-            InsertCoinsTask(coinDao).execute(*coins.toTypedArray()).get()
-
-            // Extract GOLD exchange rates from map data.
-            val parsedMap = JSONObject(rawMapData)
-            val parsedRates = parsedMap.optJSONObject("rates") // TODO: Make "rates AppConsts.
-            AppLog(tag, "updateDatabase", "parsedMap.optJSONObject(\"rates\")=$parsedRates")
-
-            // Convert JSON rates into Rate objects we can store in our database.
-            val rates = ArrayList<Rate>()
-            AppConsts.supportedCurrencies.forEach {
-                val rate = Rate(it,
-                                parsedRates.optDouble(it),
-                                currentDate)
-                rates.add(rate)
-            }
-
-            // Insert new GOLD exchange rates into the database and wait for task to finish.
-            InsertRatesTask(rateDao).execute(*rates.toTypedArray()).get()
+            // Update locally stored GOLD exchange rates from downloaded map.
+            updateRates(rawMapData, currentDate)
 
             AppLog(tag, "updateDatabase", "Finished updating database")
         }
+    }
+
+    /**
+     * Update map download date in SharedPreferences.
+     *
+     * @param mapDownloadDate New map download date.
+     */
+    private fun updateMapDownloadDate(mapDownloadDate: String) {
+        val settings = context.getSharedPreferences(AppConsts.preferencesFilename,
+                Context.MODE_PRIVATE)
+
+        // Update the last map download date.
+        val editor = settings.edit()
+
+        AppLog(tag, "updateDatabase", "Setting mapDownloadDate to $mapDownloadDate in" +
+                "SharedPreferences")
+        editor.putString(AppConsts.mapDownloadDate, mapDownloadDate)
+
+        editor.apply()
+    }
+
+    /**
+     * Update locally stored coins from raw GeoJSON map data.
+     *
+     * @param rawMapData Raw GeoJSON map data with new coins.
+     * @param validDate Date for which coins will be valid.
+     */
+    private fun updateCoins(rawMapData: String, validDate: String) {
+        // Extract coin data from map data.
+        val coins = Coin.fromGeoJSON(rawMapData, validDate)
+                ?: ArrayList()
+        AppLog(CoinRepository.tag, "updateDatabase", "coins[0]=${coins[0]}")
+
+        // Insert the new coins into the database and wait for task to finish.
+        AppLog(tag, "updateDatabase", "Inserting new coins into database")
+        InsertCoinsTask(coinDao).execute(*coins.toTypedArray()).get()
+    }
+
+    /**
+     * Update locally stored GOLD exchange rates from raw GeoJSON map data.
+     *
+     * @param rawMapData Raw GeoJSON map data with new coins.
+     * @param validDate Date for which exchange rates will be valid.
+     */
+    private fun updateRates(rawMapData: String, validDate: String) {
+        // Extract GOLD exchange rates from map data.
+        val parsedMap = JSONObject(rawMapData)
+        val parsedRates = parsedMap.optJSONObject("rates") // TODO: Make "rates AppConsts.
+        AppLog(tag, "updateDatabase", "parsedMap.optJSONObject(\"rates\")=$parsedRates")
+
+        // Convert JSON rates into Rate objects we can store in our database.
+        val rates = ArrayList<Rate>()
+        AppConsts.supportedCurrencies.forEach {
+            val rate = Rate(it,
+                            parsedRates.optDouble(it),
+                            validDate)
+            rates.add(rate)
+        }
+
+        // Insert new GOLD exchange rates into the database and wait for task to finish.
+        InsertRatesTask(rateDao).execute(*rates.toTypedArray()).get()
     }
 
 }

@@ -15,16 +15,20 @@ import com.coinz.app.database.repositories.CoinRepository
  */
 class MapCoinsViewModel(application: Application): AndroidViewModel(application) {
 
+    // Coin repository to access the coin data.
     private var coinRepository: CoinRepository
 
+    // Cached, observable copy of uncollected coins.
     var coins: LiveData<List<Coin>>
 
     init {
+        // Initialize the coin repository instance.
         val db = CoinDatabase.getInstance(application)
         val coinDao = db.coinDao()
         val rateDao = db.rateDao()
         coinRepository = CoinRepository(application, coinDao, rateDao)
 
+        // Get an observable copy of all uncollected coins.
         coins = coinRepository.getAllNotCollected()
     }
 

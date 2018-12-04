@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey
 import com.coinz.app.utils.AppConsts
 
 /**
- * Class representing exchange rate for currency to GOLD.
+ * Class representing exchange rate for currencies to GOLD.
  */
 @Entity(tableName = AppConsts.ratesTableName)
 class Rate(

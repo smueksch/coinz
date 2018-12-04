@@ -13,9 +13,11 @@ import com.coinz.app.database.repositories.RateRepository
  */
 class RateViewModel(application: Application) : AndroidViewModel(application) {
 
+    // Object to access all GOLD exchange rates data.
     private val repository: RateRepository
 
     init {
+        // Initialize the rate repository.
         val db = CoinDatabase.getInstance(application)
         val coinDao = db.coinDao()
         val rateDao = db.rateDao()
