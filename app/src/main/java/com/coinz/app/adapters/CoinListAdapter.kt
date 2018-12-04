@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.coinz.app.R
-import com.coinz.app.database.GoldDatabase
 import com.coinz.app.database.entities.Coin
 import com.coinz.app.database.viewmodels.RateViewModel
 import com.coinz.app.fragments.StoreCoinDialogFragment
@@ -24,12 +23,12 @@ import com.coinz.app.fragments.StoreCoinDialogFragment
  * @param context Application context
  * @param childFragmentManager Fragment Manager to create child fragments, used to display dialogs.
  * @param rateViewModel View model encapsulating GOLD exchange rates.
- * @param goldDatabase Remote GOLD database access object.
+// * @param goldDatabase Remote GOLD database access object. DISABLED AS IT CAUSED APP CRASHES.
  */
 class CoinListAdapter(context: Context,
                       private val childFragmentManager: FragmentManager,
-                      private val rateViewModel: RateViewModel,
-                      private val goldDatabase: GoldDatabase): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
+                      private val rateViewModel: RateViewModel/*,
+                      private val goldDatabase: GoldDatabase*/): RecyclerView.Adapter<CoinListAdapter.CoinViewHolder>() {
 
     /**
      * Class holding the view of a single coin.
@@ -121,15 +120,22 @@ class CoinListAdapter(context: Context,
         }
         ft.addToBackStack(null)
 
+        /* DISABLED AS IT CAUSE APP CRASHES.
         // Get current GOLD amount.
         val currentGold = goldDatabase.getGold()
+        */
+
+        // Provide dummy GOLD values as we can't access the real ones.
+        val dummyCurrentGold = 1729.31415
 
         // Compute how much GOLD will be in user's central bank once the coin is banked.
         val exchangeRate = rateViewModel.getRateByCurrency(coinCurrency)
-        val updatedGold = currentGold + coinValue * exchangeRate.rate
+        val updatedGold = dummyCurrentGold + coinValue * exchangeRate.rate
 
         // Create appropriate dialog to store the coin.
-        val collectCoinDialog = StoreCoinDialogFragment.newInstance(coinId, currentGold, updatedGold)
+        val collectCoinDialog = StoreCoinDialogFragment.newInstance(coinId,
+                                                                    dummyCurrentGold,
+                                                                    updatedGold)
 
         // Show the store coin dialog.
         // NOTE: Could be that putting null here is a problem!

@@ -28,10 +28,12 @@
         app:layout_constraintStart_toStartOf="@+id/central_bank_title"
         app:layout_constraintTop_toBottomOf="@+id/central_bank_title"/>
 
+    <!-- Text is a placeholder, as current central bank doesn't work-->
     <TextView
         android:id="@+id/central_bank_gold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="1729.314159218293746198"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

@@ -12,10 +12,20 @@ import com.coinz.app.utils.AppLog
 import com.coinz.app.utils.AppConsts
 import java.lang.IllegalStateException
 
-// Source: https://developer.android.com/guide/topics/ui/dialogs
+/**
+ * Dialog handling coin collection.
+ *
+ * This dialog is invoked whenever the user clicks on a marker on the map. It displays relevant
+ * information about the coin and gives the user a choice of whether to collect the coin, given
+ * the user is in range, or not.
+ *
+ * Adapted from:
+ * https://developer.android.com/guide/topics/ui/dialogs
+ */
 class CollectCoinDialogFragment: DialogFragment() {
 
     companion object {
+        // Tag identifying log output from this fragment.
         const val logTag = "CollectCoinDialogFragment"
 
         /**
@@ -44,13 +54,19 @@ class CollectCoinDialogFragment: DialogFragment() {
         }
     }
 
+    // Callback object notified when a coin is collected.
     private lateinit var callback: OnCollectCoinListener
 
+    // Coin related data displayed to the user when he clicks on a marker.
     private var coinCurrency = ""
     private var coinId = ""
     private var coinValue = ""
-    private var markerDist = 0.0 // Distance between user and marker in meters.
 
+    // Distance between user and marker in meters.
+    private var markerDist = 0.0
+
+    // Reference to the button that collects the coin when pressed, used to disable this button
+    // in case the user is not in range of the coin.
     private val collectButton: Button by lazy {
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
     }
@@ -58,9 +74,8 @@ class CollectCoinDialogFragment: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize the coin collect callback.
         try {
-            // TODO: Can we handle the case where the caller is an activity? Do we need to?
-            //callback = activity as OnCollectCoinListener
             callback = parentFragment as OnCollectCoinListener
         } catch (e: java.lang.ClassCastException) {
             throw ClassCastException("Calling activity must implement OnCollectCoinListener")
@@ -89,12 +104,14 @@ class CollectCoinDialogFragment: DialogFragment() {
 
                 setView(view)
 
+                // Set collect button action.
                 setPositiveButton(getString(R.string.confirm_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickPositive", "Collect pressed")
 
                     AppLog(logTag, "onClickPositive", "Setting Coin with id=$coinId to collected")
                     callback.onCollectCoin(coinId)
                 }
+                // Set cancel button action.
                 setNegativeButton(getString(R.string.cancel_coin_collection)) { _, _ ->
                     AppLog(logTag, "onClickNegative", "Cancel pressed")
                     dialog.cancel()
@@ -114,6 +131,7 @@ class CollectCoinDialogFragment: DialogFragment() {
 
         AppLog(logTag, "onStart", "markerDist=$markerDist")
 
+        // Check whether user is in range to collect the coin they clicked on.
         if (markerDist > AppConsts.maxCollectDist) {
             // User is too far away from coin, disable the button to collect the coin.
             collectButton.isEnabled = false

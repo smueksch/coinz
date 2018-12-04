@@ -3,7 +3,7 @@ package com.coinz.app.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-/*
+/**
  * Date utility object.
  *
  * Includes specialized methods for the need of this application, such as getting the current

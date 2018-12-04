@@ -1,7 +1,6 @@
 package com.coinz.app.utils
 
-// TODO: should this be named NavigationMenu or NavigationDrawerMenu?
-/*
+/**
  * Navigation drawer menu item indices.
  *
  * Utility construct to access specific items in the navigation drawer menu. The values of the

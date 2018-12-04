@@ -12,29 +12,43 @@ import android.view.View
 import android.view.ViewGroup
 import com.coinz.app.R
 import com.coinz.app.adapters.CoinListAdapter
-import com.coinz.app.database.GoldDatabase
 import com.coinz.app.database.viewmodels.CollectedCoinViewModel
 import com.coinz.app.database.viewmodels.RateViewModel
 import com.coinz.app.interfaces.OnStoreCoinListener
 import com.coinz.app.utils.AppLog
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Fragment displaying all coins stored in the local wallet.
+ *
+ * This fragment displays all currently collected coins in a list of card views, one card per coin.
+ */
 class LocalWalletFragment : Fragment(), OnStoreCoinListener {
 
     companion object {
+        // Tag identifying log output from this fragment.
         const val logTag = "LocalWalletFragment"
 
+        /**
+         * Create new instance of fragment.
+         *
+         * @return Instance of local wallet fragment.
+         */
         fun newInstance(): LocalWalletFragment {
             return LocalWalletFragment()
         }
     }
 
+    // Firebase authenticator object, used to access Firbase's account management.
     private lateinit var auth: FirebaseAuth
-    private lateinit var goldDatabase: GoldDatabase
+    //private lateinit var goldDatabase: GoldDatabase
 
+    // Context of activity this fragment is associated to, use whenever a function requires a
+    // context.
     // Have to wait with initialization until fragment is attached to an activity.
     private lateinit var associatedContext: Context
 
+    // View models holding and giving access to coin and GOLD exchange rate data.
     private lateinit var coinViewModel: CollectedCoinViewModel
     private lateinit var rateViewModel: RateViewModel
 
@@ -49,13 +63,15 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize access to Firebase's account management.
         auth = FirebaseAuth.getInstance()
 
         // Note: If we're in the Local Wallet then we will have required log in earlier, so we
         // should always have a user at this stage.
-        val user = auth.currentUser?.email ?: ""
-        goldDatabase = GoldDatabase(user)
+        //val user = auth.currentUser?.email ?: ""
+        //goldDatabase = GoldDatabase(user) // DISABLED AS IT CAUSED CRASHES
 
+        // Initialize GOLD exchange rate view model.
         rateViewModel = ViewModelProviders.of(this).get(RateViewModel::class.java)
     }
 
@@ -63,9 +79,10 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
                               savedInstanceState: Bundle?): View? {
         val fragmentView = inflater.inflate(R.layout.fragment_local_wallet, container, false)
 
+        // Initialize the recycler view used to display the coins in a list.
         val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.coin_recyclerview)
-        val adapter = CoinListAdapter(associatedContext, childFragmentManager, rateViewModel,
-                                      goldDatabase)
+        val adapter = CoinListAdapter(associatedContext, childFragmentManager, rateViewModel/*,
+                                      goldDatabase*/) // goldDatabse disabled as it cause crashes.
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(associatedContext)
@@ -100,6 +117,7 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         val exchangeRate = rateViewModel.getRateByCurrency(coin.currency)
         AppLog(logTag, "onStoreCoin", "GOLD exchange rate for ${coin.currency} is ${exchangeRate.rate}")
 
+        /* DISABLED AS IT CAUSED CRASHES. Original purpose was to update the remote GOLD value.
         val exchangeGold = coin.storedValue * exchangeRate.rate
 
         val currentGold = goldDatabase.getGold()
@@ -111,6 +129,7 @@ class LocalWalletFragment : Fragment(), OnStoreCoinListener {
         // today.
         goldDatabase.setGold(currentGold + exchangeGold)
         goldDatabase.setNumStoredCoins(currentNumStoredCoins + 1)
+        */
 
         // Remove coin that we just stored in central bank from our local wallet
         coinViewModel.deleteCoinById(coinId)

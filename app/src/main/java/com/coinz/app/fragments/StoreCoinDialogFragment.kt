@@ -10,9 +10,16 @@ import com.coinz.app.interfaces.OnStoreCoinListener
 import com.coinz.app.utils.AppLog
 import java.lang.IllegalStateException
 
+/**
+ * Dialog to store a coin in the central bank.
+ *
+ * Displays a dialog with information about the coin the user is requesting to store in the central
+ * bank, giving them the option to do so or cancel.
+ */
 class StoreCoinDialogFragment : DialogFragment() {
 
     companion object {
+        // Tag used to identify log output from this fragment.
         const val logTag = "StoreCoinDialogFragment"
 
         /**
@@ -36,6 +43,7 @@ class StoreCoinDialogFragment : DialogFragment() {
         }
     }
 
+    // Information displayed to the user when they try to store a coin in the central bank.
     private var coinId = ""
     private var currGold = 0.0
     private var newGold = 0.0
@@ -71,12 +79,14 @@ class StoreCoinDialogFragment : DialogFragment() {
 
                 setView(view)
 
+                // Set store button action.
                 setPositiveButton(getString(R.string.store_coin_store_button)) { _, _ ->
                     AppLog(logTag, "onClickPositive", "Collect pressed")
 
                     AppLog(logTag, "onClickPositive", "Storing Coin with id=$coinId in central bank")
                     callback.onStoreCoin(coinId)
                 }
+                // Set cancel button action.
                 setNegativeButton(getString(R.string.store_coin_cancel_button)) { _, _ ->
                     AppLog(logTag, "onClickNegative", "Cancel pressed")
                     dialog.cancel()

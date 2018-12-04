@@ -39,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     // Fragment used to display the status of the central bank.
     private lateinit var centralBankFragment: CentralBankFragment
 
+    /**
+     * Initialize the activity and all relevant parts of it, i.e. fragments, navigation drawer, etc.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -99,6 +102,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // Make sure the user is logged in when they're in the main activity.
         ensureUserLoggedIn(auth.currentUser)
 
         restorePreferences()

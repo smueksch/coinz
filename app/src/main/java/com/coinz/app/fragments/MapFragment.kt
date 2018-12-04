@@ -49,6 +49,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
                     OnCollectCoinListener {
 
     companion object {
+        // Tag to identify log output from this fragment.
         const val logTag = "MapFragment"
 
         // TODO: could have something with options like SupportMapFragment.
@@ -57,16 +58,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    // Context and activity associated to this fragment, i.e. the corresponding to the callers. Used
+    // when functions require one of these.
     // Have to wait with initialization until fragment is attached to an activity.
     private lateinit var associatedContext: Context
     private lateinit var associatedActivity: FragmentActivity
 
+    // View model storing and giving access to the coin data.
     private lateinit var coinViewModel: MapCoinsViewModel
 
+    // Mapbox map used to manage the map, for instance settings for it.
     private lateinit var mapboxMap: MapboxMap
+    // Actual view of the map on screen.
     private lateinit var mapView: MapView
 
+    // Location of the user.
     private lateinit var origin: Location
+
+    // Variables used to handle location and location updates.
     private lateinit var locationEngine: LocationEngine
     private lateinit var locationLayerPlugin: LocationLayerPlugin
 
@@ -89,10 +98,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         Mapbox.getInstance(associatedContext, AppConsts.mapboxToken)
     }
 
+    /**
+     * Initialize the map view.
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val fragmentView = inflater.inflate(R.layout.fragment_map, container, false) // TODO: compare to other fragment.
+        val fragmentView = inflater.inflate(R.layout.fragment_map, container, false)
 
+        // Get the view in which we'll display the map.
         mapView = fragmentView.findViewById(R.id.map_view)
 
         // Call mapView's onCreate here rather than onCreate as we need the view to be inflated
@@ -142,6 +155,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
      * Mapbox relevant callbacks.
      */
 
+    /**
+     * Initialize map and location once map is ready to.
+     *
+     * @param mapboxMap Mapbox map manager.
+     */
     override fun onMapReady(mapboxMap: MapboxMap?) {
         if (mapboxMap == null) {
             AppLog(logTag, "onMapReady", "mapboxMap is null")
@@ -178,14 +196,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
             }
 
             // Do initial rendering of all markers.
-            coinViewModel.coins?.value?.forEach { addMarker(mapboxMap, it) }
+            coinViewModel.coins.value?.forEach { addMarker(mapboxMap, it) }
         }
     }
 
+    /**
+     * React to a location change.
+     *
+     * @param location New location of the user.
+     */
     override fun onLocationChanged(location: Location?) {
         if (location == null) {
             AppLog(logTag, "onLocationChanged", "location is null")
         } else {
+            // New location should be the origin, move the camera to it.
             origin = location
             setCameraPosition(origin)
         }
@@ -195,11 +219,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
      * Location access callbacks/functions.
      */
 
+    /**
+     * Enable location tracking.
+     */
     private fun enableLocation() {
         if (ContextCompat.checkSelfPermission(associatedActivity,
                                               android.Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
             AppLog(logTag, "enableLocation", "Location permission already granted")
+            // We have permission to access location, initialize relevant utilities.
             initializeLocationEngine()
             initializeLocationLayer()
         } else {
@@ -212,12 +240,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    /**
+     * React to the outcome of us asking for permissions.
+     *
+     * @param requestCode Code of the permission that we requested. Defined by us upon requesting it.
+     * @param permissions List of permissions.
+     * @param grantResults Outcome of requesting permission associated with requestCode.
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode) {
             AppConsts.REQUEST_ACCESS_FINE_LOCATION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     AppLog(logTag, "onRequestPermissionsResult", "Location permissions now granted")
+                    // We have location permissions, enable the location tracking.
                     enableLocation()
                 } else {
                     AppLog(logTag, "onRequestPermissionsResult", "Location permissions still not granted")
@@ -228,6 +264,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    /**
+     * Initialize location engine used to track user location.
+     */
     @SuppressWarnings("MissingPermission")
     private fun initializeLocationEngine() {
         locationEngine = LocationEngineProvider(associatedContext).obtainBestLocationEngineAvailable()
@@ -241,6 +280,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
 
         val lastLocation = locationEngine.lastLocation
 
+        // Is there a last location? If not, we need to start listening for locations.
         if (lastLocation != null) {
             origin = lastLocation
             setCameraPosition(origin)
@@ -249,6 +289,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    /**
+     * Initialize location layer.
+     */
     @SuppressWarnings("MissingPermission")
     private fun initializeLocationLayer() {
         locationLayerPlugin = LocationLayerPlugin(mapView, mapboxMap, locationEngine)
@@ -260,12 +303,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
     }
 
+    /**
+     * Activate location updates once connection is established.
+     */
     @SuppressWarnings("MissingPermission")
     override fun onConnected() {
         AppLog(logTag, "onConnected", "requesting location updates")
         locationEngine.requestLocationUpdates()
     }
 
+    /**
+     * Set camera position to given location.
+     *
+     * @param location Location the camera should be centered around.
+     */
     private fun setCameraPosition(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
@@ -297,10 +348,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         })
     }
 
+    /**
+     * React to a coin being collected.
+     *
+     * @param id ID of coin being collected.
+     */
     override fun onCollectCoin(id: String) {
         coinViewModel.setCollected(id)
     }
 
+    /**
+     * Show coin collection dialog.
+     *
+     * Opens dialog giving the user the option to collect the coin, given user is in range, or
+     * cancel.
+     *
+     * @param marker Marker being clicked, i.e. coin user may collect.
+     */
     private fun showMarkerDialog(marker: Marker) {
         val ft = childFragmentManager.beginTransaction()
         val previous = childFragmentManager.findFragmentByTag("collectDialog")
@@ -309,7 +373,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         }
         ft.addToBackStack(null)
 
-        val coinId = marker.title // Recall that we're storing the coin ID in the marker's title.
+        // Recall that we're storing the coin ID in the marker's title.
+        val coinId = marker.title
 
         // Find the coin the given marker belongs to by using the coin id.
         val coin = coinViewModel.getCoinById(coinId)
@@ -328,13 +393,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
         collectCoinDialog.show(ft, "collectDialog")
     }
 
-    // TODO: Is there a better place to put this?
+    /**
+     * Convert a location into latitude and longitude.
+     *
+     * Convert a given location into a LatLng object which can be used by the Mapbox API.
+     *
+     * @param location Location to convert.
+     */
     private fun locationToLatLng(location: Location): LatLng {
         return LatLng(location.latitude, location.longitude)
     }
 
-    // TODO: Move this into a class where it's more appropriate
-    // TODO: this could be made into a Kotlin like extension of MapboxMap.
+    /**
+     * Add a coin marker to the map.
+     *
+     * @param mapboxMap Mapbox map manager corresponding to map the marker should be added to.
+     * @param coin Coin, i.e. marker, which should be added to the map.
+     */
     private fun addMarker(mapboxMap: MapboxMap?, coin: Coin) {
         val markerOpt = MarkerOptions().apply {
             position = LatLng(coin.latitude, coin.longitude)
