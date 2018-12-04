@@ -19,10 +19,11 @@ import com.coinz.app.utils.AppConsts
  *
  * Implemented as singleton per Room requirement.
  */
-@Database(entities = arrayOf(Coin::class, Rate::class), version = 2)
+@Database(entities = [Coin::class, Rate::class], version = 2)
 abstract class CoinDatabase : RoomDatabase() {
 
     companion object {
+        // Reference to database instance, used to ensure there's only one database instance.
         @Volatile
         private var INSTANCE: CoinDatabase? = null
 
@@ -35,9 +36,13 @@ abstract class CoinDatabase : RoomDatabase() {
          */
         fun getInstance(context: Context): CoinDatabase {
             val tempInstance = INSTANCE
+
+            // Check if we already have a database instance and return it if that's the case.
             if (tempInstance != null) {
                 return tempInstance
             }
+
+            // No database instance yet, need to create one and return it.
             synchronized(this) {
                 val instance = Room.databaseBuilder(context.applicationContext,
                                                     CoinDatabase::class.java,
@@ -48,8 +53,18 @@ abstract class CoinDatabase : RoomDatabase() {
         }
     }
 
+    /**
+     * Get a coin data access object.
+     *
+     * @return Data access object for coins.
+     */
     abstract fun coinDao(): CoinDAO
 
+    /**
+     * Get a GOLD exchange rate access object.
+     *
+     * @return Data access object for GOLD exchange rates.
+     */
     abstract fun rateDao(): RateDAO
 
 }
