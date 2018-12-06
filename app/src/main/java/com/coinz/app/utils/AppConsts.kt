@@ -38,6 +38,7 @@ object AppConsts {
      */
     // Token used to get access to Mapbox functionality.
     const val mapboxToken = "pk.eyJ1Ijoic2VibXVlayIsImEiOiJjam12MWE0a3kwNW92M3Bxdmxxcnk1ZmYwIn0.1tI9T6CLf7Qq0ZvGtCK9QQ"
+
     // Initial zoom of the camera, determines what area the user sees around them at app start.
     const val initialCameraZoom = 16.0
 
@@ -46,6 +47,7 @@ object AppConsts {
      */
     // Base URL used to identify the source of the raw map files.
     const val mapBaseUrl = "http://homepages.inf.ed.ac.uk/stg/coinz"
+
     // Name of raw GeoJSON map file on the server.
     const val mapFilename = "coinzmap.geojson"
 
@@ -54,6 +56,7 @@ object AppConsts {
      */
     // Name of the SharedPreferences file, use to identify it throughout the app.
     const val preferencesFilename = "CoinzPreferences"
+
     // Name of field in which the current download date of the current map is stored.
     const val mapDownloadDate = "mapDownloadDate"
 
@@ -62,6 +65,7 @@ object AppConsts {
      */
     // Name of SQL database in which local data is stored.
     const val coinDbName = "coin.db"
+
     // Name of table in which coins are stored.
     const val coinsTableName = "coins"
     // Name of table in which GOLD exchange rates are stored.
@@ -79,6 +83,21 @@ object AppConsts {
                                       "PENY")
     // Maximum coin collection distance in meters.
     const val maxCollectDist = 25.0
+
     // Maximum bankable coins per day.
     const val maxBankable = 25
+
+    // Multiplier for coin value when collecting it with right color at right time of day.
+    const val colorMultiplier = 1.5
+
+    // Named constants for colors to identify if a marker color is relevant for the given time
+    // of day. Colors are all currently supported marker colors, but assignment to times of day and
+    // particular times of day descriptions (e.g. morning, noon, ...) are arbitrary.
+    const val morningColor = "#ffdf00"      // Yellow
+    const val noonColor = "#ff0000"   // Red
+    const val afternoonColor = "#008000" // Green
+    const val nightColor = "#0000ff"     // Blue
+
+    // Multiplier for coin value when collecting it with right marker symbol on right day of month.
+    const val symbolMultiplier = 1.5
 }

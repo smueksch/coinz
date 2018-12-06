@@ -36,6 +36,8 @@ class MapCoinsViewModel(application: Application): AndroidViewModel(application)
      * Return coin with given ID.
      *
      * @param coinId ID of requested coin.
+     *
+     * @return Requested coin.
      */
     fun getCoinById(coinId: String) = coinRepository.getCoinById(coinId)
 
@@ -45,5 +47,12 @@ class MapCoinsViewModel(application: Application): AndroidViewModel(application)
      * @param id ID of coin to be set collected.
      */
     fun setCollected(id: String) = coinRepository.setCollected(id)
+
+    /**
+     * Insert/Replace coin in local database.
+     *
+     * @param coin Coin to be inserted.
+     */
+    fun insertCoin(coin: Coin) = coinRepository.insertCoin(coin)
 
 }

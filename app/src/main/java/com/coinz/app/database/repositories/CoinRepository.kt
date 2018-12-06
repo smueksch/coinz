@@ -83,6 +83,18 @@ class CoinRepository(context: Context,
     fun setCollected(id: String): Unit = coinDao.let { SetCoinCollectedTask(it).execute(id) }
 
     /**
+     * Insert coin into local database.
+     *
+     * Note: Function is executed asynchronously, but waits for result to avoid race conditions on
+     * coins after inserting in case a coin is replaced.
+     *
+     * Attention: If a coin with identival ID is already in the database it will be replaced!
+     *
+     * @param id ID of coin to set as collected.
+     */
+    fun insertCoin(coin: Coin): Unit = coinDao.let { InsertCoinsTask(it).execute(coin).get() }
+
+    /**
      * Remove coin corresponding to given ID from local database.
      *
      * Note: Function is executed asynchronously.

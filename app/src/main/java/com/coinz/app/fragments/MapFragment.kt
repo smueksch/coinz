@@ -19,6 +19,7 @@ import com.coinz.app.database.viewmodels.MapCoinsViewModel
 import com.coinz.app.interfaces.OnCollectCoinListener
 import com.coinz.app.utils.AppConsts
 import com.coinz.app.utils.AppLog
+import com.coinz.app.utils.CoinValueMultipliers
 import com.coinz.app.utils.IconIndex
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
@@ -354,6 +355,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationEngineListener,
      * @param id ID of coin being collected.
      */
     override fun onCollectCoin(id: String) {
+        // Get the coin that is being collected.
+        var coin = coinViewModel.getCoinById(id)
+
+        // Apply all relevant value multipliers to it, i.e. apply the bonus features, and replace
+        // the coin in the local database with it.
+        coin = CoinValueMultipliers * coin
+        coinViewModel.insertCoin(coin)
+
+        // Set the collected coin to be collected so it won't show on the map again.
         coinViewModel.setCollected(id)
     }
 
