@@ -131,12 +131,11 @@ class CollectCoinDialogFragment: DialogFragment() {
 
         AppLog(logTag, "onStart", "markerDist=$markerDist")
 
-        /*
         // Check whether user is in range to collect the coin they clicked on.
         if (markerDist > AppConsts.maxCollectDist) {
             // User is too far away from coin, disable the button to collect the coin.
             collectButton.isEnabled = false
-        }*/
+        }
     }
 
 }
